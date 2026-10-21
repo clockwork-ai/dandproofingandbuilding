@@ -393,6 +393,10 @@ a.big:hover{opacity:.85}
 .work figure::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,18,.6),transparent 50%);z-index:1;pointer-events:none}
 .work figcaption{position:absolute;left:12px;right:12px;bottom:10px;z-index:2;color:#fff;font-size:13px;font-weight:500}
 .work .tall{grid-row:span 2}.work .wide{grid-column:span 2}
+.work .more{display:none}
+.work.is-open .more{display:block}
+.morejobs{display:flex;margin:var(--sc-6) auto 0}
+.morejobs[hidden]{display:none}
 @media (hover:hover) and (pointer:fine){.work figure:hover img{transform:scale(1.05)}}
 @media (max-width:900px){.work{grid-template-columns:1fr 1fr;grid-auto-rows:170px}}
 .follow{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--sc-6)}
@@ -625,7 +629,7 @@ a.big:hover{opacity:.85}
         <figcaption><b>Stripped back</b><span>Old roof off, back to the timbers, so we can see exactly what we're dealing with.</span><small>D & P job, Greater Manchester</small></figcaption>
       </figure>
       <figure class="stage">
-        <div class="ph swipe"><img src="brand_assets/fb-thumbs/valley-retile.jpg" alt="New tiles going on around a valley" loading="lazy" width="414" height="414"></div>
+        <div class="ph swipe"><img src="brand_assets/dale/dp-19.jpg" alt="The D & P team on scaffold laying felt and battens on a re-roof, with a skip below" loading="lazy" width="1100" height="825"></div>
         <figcaption><b>Felt, batten, tile</b><span>New felt, new battens, new tiles. Valleys and verges done properly.</span><small>D & P job, Greater Manchester</small></figcaption>
       </figure>
       <figure class="stage">
@@ -701,7 +705,7 @@ a.big:hover{opacity:.85}
       <div class="follow" data-sc-in><a class="soc soc--ig" href="https://www.instagram.com/dandp_roofing_and_buildingltd/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-ig"/></svg><span>Follow on Instagram<small>731 posts of our jobs</small></span></a><a class="soc soc--fb" href="https://www.facebook.com/Dandproofingandbuilding/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-fb"/></svg><span>Follow on Facebook<small>887 followers, 100% recommend</small></span></a></div>
       <div class="work">
         <figure class="tall swipe"><img src="brand_assets/fb-reroof-grey-sky-2.jpg" alt="New tile roof and ridge" loading="lazy"><figcaption>Full re-roof and roofline</figcaption></figure>
-        <figure class="wide swipe"><img src="brand_assets/ig/terrace-reroof-aerial-sep26.jpg" alt="Terrace re-roof seen from the scaffold" loading="lazy"><figcaption>Terrace re-roof, September 2026</figcaption></figure>
+        <figure class="wide swipe"><img src="brand_assets/dale/terrace-reroof-aerial.jpg" alt="Terrace re-roof seen from above, stripped back with battens going on" loading="lazy"><figcaption>Terrace re-roof, September 2026</figcaption></figure>
         <figure class="swipe"><img src="brand_assets/ig/ridge-countryside-sep26.jpg" alt="New grey tile ridge with fields behind" loading="lazy"><figcaption>New ridge, September 2026</figcaption></figure>
         <figure class="swipe"><img src="brand_assets/fb-thumbs/flat-roof-grp-1.jpg" alt="New flat roof" loading="lazy"><figcaption>Flat roof</figcaption></figure>
         <figure class="swipe"><img src="brand_assets/fb-thumbs/church-scaffold.jpg" alt="Church on scaffold for roof repairs" loading="lazy"><figcaption>Church roof repairs</figcaption></figure>
@@ -711,7 +715,46 @@ a.big:hover{opacity:.85}
         <figure class="wide swipe"><img src="brand_assets/work-extension.jpg" alt="Rear extension with bifold doors" loading="lazy"><figcaption>Rear extension</figcaption></figure>
         <figure class="swipe"><img src="brand_assets/fb-thumbs/bay-canopy-after.jpg" alt="New bay canopy" loading="lazy"><figcaption>Bay canopy, replaced</figcaption></figure>
         <figure class="swipe"><img src="brand_assets/fb-thumbs/van.jpg" alt="D & P van on a job" loading="lazy"><figcaption>On the way to yours</figcaption></figure>
+        <figure class="tall swipe"><img src="brand_assets/dale/dp-31.jpg" alt="D & P job: new tiled roof" loading="lazy" width="825" height="1100"><figcaption>New tiled roof</figcaption></figure>
+        <figure class="swipe"><img src="brand_assets/dale/dp-04.jpg" alt="D & P job: new tiled roof" loading="lazy" width="825" height="1100"><figcaption>New tiled roof</figcaption></figure>
+        <figure class="wide swipe"><img src="brand_assets/dale/dp-18.jpg" alt="D & P job: full re-roof, battens on" loading="lazy" width="1100" height="825"><figcaption>Full re-roof, battens on</figcaption></figure>
+        <figure class="swipe"><img src="brand_assets/dale/dp-26.jpg" alt="D & P job: bay roof finished" loading="lazy" width="825" height="1100"><figcaption>Bay roof finished</figcaption></figure>
+        <figure class="swipe"><img src="brand_assets/dale/dp-13.jpg" alt="D & P job: re-roof in progress" loading="lazy" width="1100" height="825"><figcaption>Re-roof in progress</figcaption></figure>
+        <figure class="wide swipe"><img src="brand_assets/dale/dp-05.jpg" alt="D & P job: re-roof from above" loading="lazy" width="1100" height="825"><figcaption>Re-roof from above</figcaption></figure>
+        <figure class="tall swipe"><img src="brand_assets/dale/dp-22.jpg" alt="D & P job: scaffold to the gable" loading="lazy" width="825" height="1100"><figcaption>Scaffold to the gable</figcaption></figure>
+        <figure class="swipe"><img src="brand_assets/dale/dp-37.jpg" alt="D & P job: scaffold up" loading="lazy" width="825" height="1100"><figcaption>Scaffold up</figcaption></figure>
+        <figure class="swipe"><img src="brand_assets/dale/dp-03.jpg" alt="D & P job: bay roof finished" loading="lazy" width="825" height="1100"><figcaption>Bay roof finished</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-24.jpg" alt="D & P job: scaffold up" loading="lazy" width="825" height="1100"><figcaption>Scaffold up</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-32.jpg" alt="D & P job: new tiled roof" loading="lazy" width="825" height="1100"><figcaption>New tiled roof</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-25.jpg" alt="D & P job: re-roof from above" loading="lazy" width="1100" height="825"><figcaption>Re-roof from above</figcaption></figure>
+        <figure class="wide more swipe"><img src="brand_assets/dale/dp-34.jpg" alt="D & P job: roof stripped back" loading="lazy" width="1100" height="825"><figcaption>Roof stripped back</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-08.jpg" alt="D & P job: bay roof, felt and battens" loading="lazy" width="825" height="1100"><figcaption>Bay roof, felt and battens</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-02.jpg" alt="D & P job: bay roof re-boarded" loading="lazy" width="825" height="1100"><figcaption>Bay roof re-boarded</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-20.jpg" alt="D & P job: bay roof, stripped back" loading="lazy" width="825" height="1100"><figcaption>Bay roof, stripped back</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-27.jpg" alt="D & P job: bay roof, before" loading="lazy" width="825" height="1100"><figcaption>Bay roof, before</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-36.jpg" alt="D & P job: bay roof insulated" loading="lazy" width="825" height="1100"><figcaption>Bay roof insulated</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-33.jpg" alt="D & P job: bay roof re-boarded" loading="lazy" width="825" height="1100"><figcaption>Bay roof re-boarded</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-09.jpg" alt="D & P job: bay roof, felt and battens" loading="lazy" width="825" height="1100"><figcaption>Bay roof, felt and battens</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-11.jpg" alt="D & P job: bay roof rebuild" loading="lazy" width="825" height="1100"><figcaption>Bay roof rebuild</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-39.jpg" alt="D & P job: bay roof, felt and battens" loading="lazy" width="825" height="1100"><figcaption>Bay roof, felt and battens</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-07.jpg" alt="D & P job: scaffold up" loading="lazy" width="825" height="1100"><figcaption>Scaffold up</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-12.jpg" alt="D & P job: rear extension" loading="lazy" width="825" height="1100"><figcaption>Rear extension</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-16.jpg" alt="D & P job: extension and rendering" loading="lazy" width="825" height="1100"><figcaption>Extension and rendering</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-40.jpg" alt="D & P job: extension" loading="lazy" width="825" height="1100"><figcaption>Extension</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-29.jpg" alt="D & P job: scaffold and render" loading="lazy" width="825" height="1100"><figcaption>Scaffold and render</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-23.jpg" alt="D & P job: new roofline" loading="lazy" width="825" height="1100"><figcaption>New roofline</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-38.jpg" alt="D & P job: parapet and roof edge" loading="lazy" width="825" height="1100"><figcaption>Parapet and roof edge</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-01.jpg" alt="D & P job: roof edge and gutter" loading="lazy" width="825" height="1100"><figcaption>Roof edge and gutter</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-06.jpg" alt="D & P job: parapet and gutter" loading="lazy" width="825" height="1100"><figcaption>Parapet and gutter</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-15.jpg" alt="D & P job: flat roof edge" loading="lazy" width="825" height="1100"><figcaption>Flat roof edge</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-14.jpg" alt="D & P job: rear roofline" loading="lazy" width="825" height="1100"><figcaption>Rear roofline</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-10.jpg" alt="D & P job: rear of the property" loading="lazy" width="825" height="1100"><figcaption>Rear of the property</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-17.jpg" alt="D & P job: brickwork" loading="lazy" width="1100" height="825"><figcaption>Brickwork</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-28.jpg" alt="D & P job: brickwork" loading="lazy" width="825" height="1100"><figcaption>Brickwork</figcaption></figure>
+        <figure class="tall more swipe"><img src="brand_assets/dale/dp-35.jpg" alt="D & P job: brickwork" loading="lazy" width="825" height="1100"><figcaption>Brickwork</figcaption></figure>
+        <figure class="more swipe"><img src="brand_assets/dale/dp-21.jpg" alt="D & P job: bay roof, old timbers out" loading="lazy" width="825" height="1100"><figcaption>Bay roof, old timbers out</figcaption></figure>
       </div>
+      <button class="morejobs btn btn--red" type="button" aria-expanded="false">Show more jobs (29)</button>
     </div>
   </section>
 
@@ -876,6 +919,16 @@ a.big:hover{opacity:.85}
   addEventListener("resize", onScroll);
   addEventListener("load", check);
   check();
+})();
+
+// gallery: reveal the rest of the jobs, then let the swipe-in pick them up
+(function () {
+  var b = document.querySelector(".morejobs"), g = document.querySelector(".work");
+  if (!b || !g) return;
+  b.addEventListener("click", function () {
+    g.classList.add("is-open"); b.setAttribute("aria-expanded", "true"); b.hidden = true;
+    dispatchEvent(new Event("scroll"));
+  });
 })();
 
 // quote form -> WhatsApp, sent only when the visitor presses send
