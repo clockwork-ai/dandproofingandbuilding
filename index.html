@@ -417,6 +417,22 @@ a.big:hover{opacity:.85}
 .soc:active{transform:translateY(1px) scale(.98)}
 .areas{font-family:var(--sc-font-display);font-weight:600;font-stretch:104%;font-size:clamp(1.25rem,2.2vw,1.75rem);line-height:1.45;letter-spacing:-.01em;color:var(--ink-dark-soft);max-width:60rem;margin-top:var(--sc-6)}
 .areas strong{color:var(--ink-dark);font-weight:800}
+.towngrid{list-style:none;margin:var(--sc-6) 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.town{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px;background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px rgba(40,30,15,.1),0 10px 22px -16px rgba(40,30,15,.4)}
+.town b{font-family:var(--sc-font-display);font-weight:800;font-stretch:108%;font-size:19px;color:var(--ink-dark)}
+.town small{font-size:13px;color:var(--ink-dark-soft)}
+.town span{grid-column:1/-1;display:flex;gap:8px;margin-top:6px}
+.town a{flex:1;text-align:center;padding:8px 10px;border-radius:9px;font-size:14px;font-weight:600;text-decoration:none;background:var(--stone);color:var(--ink-dark);transition:background-color .16s var(--sc-ease-out),color .16s var(--sc-ease-out)}
+.town a:first-child{background:#0354B4;color:#fff}
+.town a:hover{background:#DE213A;color:#fff}
+.town a:active{transform:scale(.97)}
+.towns-all{margin-top:var(--sc-6)}
+@media (max-width:700px){.towngrid{grid-template-columns:1fr 1fr;gap:8px}.town{padding:12px;gap:2px 6px}.town b{font-size:16px}.town small{grid-column:1/-1;font-size:12px}.town span{gap:6px}.town a{padding:8px 4px;font-size:13px}}
+.svc-more{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--sc-6)}
+.btn--dark{background:var(--ink-dark);color:#fff}
+.btn--dark:hover{background:#0354B4}
+.light .lede{margin-bottom:0}
+
 .areas a{color:inherit;text-decoration:underline;text-decoration-color:rgba(17,26,38,.25);text-underline-offset:4px;transition:text-decoration-color .16s var(--sc-ease-out),color .16s var(--sc-ease-out)}
 .areas a:hover{color:var(--blue);text-decoration-color:currentColor}
 .svc dt a{color:inherit;text-decoration:none;border-bottom:2px solid rgba(222,33,58,.5)}
@@ -709,6 +725,7 @@ a.big:hover{opacity:.85}
         <div class="row"><dt><a href="builders-manchester/">Groundworks</a></dt><dd><strong>Patios and driveways.</strong> Fencing, decking, drainage, flagging, demolition and exterior painting, by our own groundworks team.</dd></div>
       </dl>
     </div>
+    <div class="sc-wrap svc-more"><a class="btn btn--red" href="roofers-manchester/">Roofing services <span aria-hidden="true">&rarr;</span></a><a class="btn btn--dark" href="builders-manchester/">Building and groundworks <span aria-hidden="true">&rarr;</span></a></div>
   </section>
 
   <section class="sc-section" id="work" style="padding-top:0">
@@ -728,7 +745,9 @@ a.big:hover{opacity:.85}
   <section class="sc-section" id="areas" style="padding-top:0">
     <div class="sc-wrap" data-sc-in>
       <h2>Based on Park Road, Westhoughton BL5. Working across the North West.</h2>
-      <p class="areas"><strong>Westhoughton, Worsley, <a href="roofers-bolton/">Bolton</a>,</strong> <a href="roofers-manchester/">Manchester</a>, <a href="roofers-salford/">Salford</a>, <a href="roofers-walkden/">Walkden</a>, <a href="roofers-little-hulton/">Little Hulton</a>, <a href="roofers-atherton/">Atherton</a>, <a href="roofers-hindley/">Hindley</a>, <a href="roofers-leigh/">Leigh</a>, <a href="roofers-boothstown/">Boothstown</a>, <a href="roofers-farnworth/">Farnworth</a>, <a href="roofers-kearsley/">Kearsley</a>, <a href="roofers-swinton/">Swinton</a>, <a href="roofers-monton/">Monton</a>, <a href="roofers-eccles/">Eccles</a>, <a href="roofers-irlam/">Irlam</a>, <a href="roofers-bury/">Bury</a>, <a href="roofers-sale/">Sale</a>, <a href="roofers-altrincham/">Altrincham</a>, <a href="roofers-trafford/">Trafford</a>, <a href="roofers-bramhall/">Bramhall</a> and <a href="roofers-cheshire/">Cheshire</a>. Not on the list? Ask anyway. <a href="locations/">See all areas</a>.</p>
+      <p class="lede">Westhoughton, Worsley and every town below, nearest first. Choose your town for local roofing or building.</p>
+      <ul class="towngrid"><li class="town"><b>Hindley</b><small>2 miles</small><span><a href="roofers-hindley/">Roofing</a><a href="builders-hindley/">Building</a></span></li><li class="town"><b>Atherton</b><small>2 miles</small><span><a href="roofers-atherton/">Roofing</a><a href="builders-atherton/">Building</a></span></li><li class="town"><b>Leigh</b><small>4 miles</small><span><a href="roofers-leigh/">Roofing</a><a href="builders-leigh/">Building</a></span></li><li class="town"><b>Bolton</b><small>4 miles</small><span><a href="roofers-bolton/">Roofing</a><a href="builders-bolton/">Building</a></span></li><li class="town"><b>Little Hulton</b><small>5 miles</small><span><a href="roofers-little-hulton/">Roofing</a><a href="builders-little-hulton/">Building</a></span></li><li class="town"><b>Farnworth</b><small>5 miles</small><span><a href="roofers-farnworth/">Roofing</a><a href="builders-farnworth/">Building</a></span></li><li class="town"><b>Boothstown</b><small>5 miles</small><span><a href="roofers-boothstown/">Roofing</a><a href="builders-boothstown/">Building</a></span></li><li class="town"><b>Walkden</b><small>5 miles</small><span><a href="roofers-walkden/">Roofing</a><a href="builders-walkden/">Building</a></span></li><li class="town"><b>Kearsley</b><small>6 miles</small><span><a href="roofers-kearsley/">Roofing</a><a href="builders-kearsley/">Building</a></span></li><li class="town"><b>Swinton</b><small>8 miles</small><span><a href="roofers-swinton/">Roofing</a><a href="builders-swinton/">Building</a></span></li><li class="town"><b>Monton</b><small>8 miles</small><span><a href="roofers-monton/">Roofing</a><a href="builders-monton/">Building</a></span></li><li class="town"><b>Irlam</b><small>8 miles</small><span><a href="roofers-irlam/">Roofing</a><a href="builders-irlam/">Building</a></span></li><li class="town"><b>Eccles</b><small>9 miles</small><span><a href="roofers-eccles/">Roofing</a><a href="builders-eccles/">Building</a></span></li><li class="town"><b>Bury</b><small>10 miles</small><span><a href="roofers-bury/">Roofing</a><a href="builders-bury/">Building</a></span></li><li class="town"><b>Salford</b><small>10 miles</small><span><a href="roofers-salford/">Roofing</a><a href="builders-salford/">Building</a></span></li><li class="town"><b>Trafford</b><small>11 miles</small><span><a href="roofers-trafford/">Roofing</a><a href="builders-trafford/">Building</a></span></li><li class="town"><b>Sale</b><small>12 miles</small><span><a href="roofers-sale/">Roofing</a><a href="builders-sale/">Building</a></span></li><li class="town"><b>Altrincham</b><small>13 miles</small><span><a href="roofers-altrincham/">Roofing</a><a href="builders-altrincham/">Building</a></span></li><li class="town"><b>Cheshire</b><small>14 miles</small><span><a href="roofers-cheshire/">Roofing</a><a href="builders-cheshire/">Building</a></span></li><li class="town"><b>Bramhall</b><small>20 miles</small><span><a href="roofers-bramhall/">Roofing</a><a href="builders-bramhall/">Building</a></span></li></ul>
+      <a class="btn btn--red towns-all" href="locations/">See all areas we cover</a>
     </div>
   </section>
 
