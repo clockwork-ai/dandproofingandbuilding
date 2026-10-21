@@ -105,7 +105,7 @@
   --sc-font-text:"Geist", system-ui, sans-serif;
   --blue:#0354B4; --blue-soft:#8DB8F0; --navy:#0A1B3D; --stone:#EFEBE4; --stone-2:#E4DED4;
   --ink-dark:#111A26; --ink-dark-soft:#4D5868; --line-dark:#D4CCC0; --wa:#1FA855;
-  --bar-h:68px;
+  --bar-h:68px; --emg-h:38px;
 }
 body{background:var(--sc-canvas)}
 .sc-display{font-weight:800;font-stretch:112%;letter-spacing:-.025em}
@@ -119,7 +119,7 @@ a{color:inherit}
 .demo b{color:#fff;font-weight:600}
 
 /* ---------- bar with the Which? badge ---------- */
-.bar{position:sticky;top:0;z-index:60;height:var(--bar-h);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 var(--sc-gutter);
+.bar{position:sticky;top:var(--emg-h);z-index:60;height:var(--bar-h);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 var(--sc-gutter);
   background:linear-gradient(to bottom,rgba(8,12,18,.82),rgba(8,12,18,.55));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.07)}
 .mark{display:flex;align-items:center;background:#fff;border-radius:10px;padding:6px 10px;box-shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px -10px rgba(0,0,0,.6);transition:transform .16s var(--sc-ease-out)}
 .mark img{height:30px;width:auto;display:block}
@@ -149,6 +149,21 @@ a{color:inherit}
 @media (max-width:1080px){.links{display:none}}
 .bar__end{display:flex;gap:10px;align-items:center}
 @media (max-width:620px){.bar .btn--quote,.hide-sm{display:none}.mark img{height:22px}.mark{padding:5px 8px}.bar{gap:8px}.wx{font-size:12px;padding:6px 11px}.bar .btn{min-width:42px;padding:0 12px}}
+
+/* emergency strip, always visible above the bar */
+html{scroll-padding-top:calc(var(--bar-h) + var(--emg-h) + 8px)}
+.emg{position:sticky;top:0;z-index:61;height:var(--emg-h);display:flex;align-items:center;justify-content:center;gap:12px;padding:0 var(--sc-gutter);
+  background:#DE213A;color:#fff;font-size:14px;font-weight:500;line-height:1;white-space:nowrap;box-shadow:0 6px 18px -10px rgba(120,10,25,.7)}
+.emg b{font-weight:700;letter-spacing:.01em}
+.emg__dot{width:9px;height:9px;border-radius:50%;background:#fff;flex:none;box-shadow:0 0 0 0 rgba(255,255,255,.7);animation:emgpulse 1.8s ease-out infinite}
+@keyframes emgpulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.7)}70%{box-shadow:0 0 0 9px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.emg a{color:#fff;font-weight:700;text-decoration:underline;text-decoration-color:rgba(255,255,255,.5);text-underline-offset:3px;transition:text-decoration-color .16s var(--sc-ease-out)}
+.emg a:hover{text-decoration-color:#fff}
+.emg__m{display:none}
+.emg a.emg__m{text-decoration:none}
+@media (max-width:760px){.emg{gap:9px;font-size:14px}.emg__d{display:none}.emg__m{display:inline-flex;align-items:center;gap:9px;color:#fff;text-decoration:none;font-weight:600}.emg__m b{text-decoration:underline;text-decoration-color:rgba(255,255,255,.5);text-underline-offset:3px}}
+@media (prefers-reduced-motion:reduce){.emg__dot{animation:none}}
+.mnav__emg{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:#DE213A;color:#fff;text-decoration:none;font-weight:600;font-size:15px}
 
 /* phone menu */
 .burger{display:none;width:44px;height:42px;border-radius:12px;border:0;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);cursor:pointer;place-items:center;align-content:center;gap:5px;padding:0;transition:background-color .16s var(--sc-ease-out),transform .16s var(--sc-ease-out)}
@@ -283,7 +298,7 @@ a.big:hover{opacity:.85}
 /* ---------- 3 the craft: flow + reveal, museum labels ---------- */
 .craft{background:linear-gradient(180deg,#0354B4 0%,#0846A0 40%,#0A3576 100%);padding:var(--sc-8) 0 var(--sc-9)}
 .craft__grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:var(--sc-9);align-items:start}
-.craft__head{position:sticky;top:calc(var(--bar-h) + 40px)}
+.craft__head{position:sticky;top:calc(var(--bar-h) + var(--emg-h) + 40px)}
 .craft__head h2{font-size:clamp(2.2rem,4.4vw,3.8rem);color:#fff}
 .craft__head h2::before{content:"";display:block;width:56px;height:6px;border-radius:3px;background:#DE213A;margin-bottom:var(--sc-5)}
 .craft__head strong{color:#fff;font-weight:700;text-decoration:underline;text-decoration-color:#DE213A;text-decoration-thickness:3px;text-underline-offset:5px}
@@ -423,7 +438,7 @@ a.big:hover{opacity:.85}
 .close__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;max-width:none;
   -webkit-mask-image:linear-gradient(to right,transparent 22%,#000 62%);mask-image:linear-gradient(to right,transparent 22%,#000 62%)}
 .close__glow{position:absolute;inset:0;background:radial-gradient(70% 80% at 20% 30%,rgba(255,226,170,.6),transparent 70%)}
-.close__inner{position:absolute;left:var(--sc-gutter);top:calc(var(--bar-h) + 6vh);right:var(--sc-gutter);z-index:3;max-width:36rem}
+.close__inner{position:absolute;left:var(--sc-gutter);top:calc(var(--bar-h) + var(--emg-h) + 6vh);right:var(--sc-gutter);z-index:3;max-width:36rem}
 .close h2{font-size:clamp(2.6rem,6vw,5rem);color:#16110A}
 .close p.sub{font-size:18px;color:#4A3F2C;margin-top:var(--sc-5);max-width:34ch}
 .close .ctas .btn--ghost{color:#16110A;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(22,17,10,.18)}
@@ -440,7 +455,7 @@ a.big:hover{opacity:.85}
 .socials a:active{transform:scale(.95)}
 @media (max-width:860px){
   .close__img{-webkit-mask-image:linear-gradient(to bottom,transparent 40%,#000 75%);mask-image:linear-gradient(to bottom,transparent 40%,#000 75%)}
-  .close__inner{top:calc(var(--bar-h) + 3vh)}
+  .close__inner{top:calc(var(--bar-h) + var(--emg-h) + 3vh)}
   .foot{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 }
 
@@ -452,7 +467,7 @@ a.big:hover{opacity:.85}
 /* phone composition */
 @media (max-width:700px){
   .hero h1{font-size:clamp(2.3rem,10vw,3rem)}
-  .hero .sc-copy{bottom:auto;top:calc(var(--bar-h) + 4vh)}
+  .hero .sc-copy{bottom:auto;top:calc(var(--bar-h) + var(--emg-h) + 3vh)}
   .hero .sc-scrim{background:linear-gradient(to bottom,rgba(6,10,16,.82),rgba(6,10,16,.55) 45%,transparent 75%)}
   .rv{padding:22px}
 }
@@ -484,6 +499,12 @@ a.big:hover{opacity:.85}
   <symbol id="w-dry" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
 </svg>
 
+<div class="emg" role="region" aria-label="Emergency roof repairs">
+  <span class="emg__dot" aria-hidden="true"></span>
+  <span class="emg__d"><b>Emergency roof repairs:</b> leaks and storm damage. Call <a href="tel:+447587415299">07587 415299</a> or <a href="https://wa.me/447587415299?text=Hi%2C%20emergency%3A%20" target="_blank" rel="noopener">WhatsApp a photo</a></span>
+  <a class="emg__m" href="tel:+447587415299">Emergency? Call <b>07587 415299</b></a>
+</div>
+
 <header class="bar">
   <a class="mark" href="#storm" aria-label="D & P Roofing and Building, back to top"><img src="brand_assets/logo-dandp-crop.png" alt="D & P Roofing and Building Ltd" width="500" height="76"></a>
   <div class="bar__mid">
@@ -502,6 +523,7 @@ a.big:hover{opacity:.85}
     <img src="brand_assets/logo-dandp-crop.png" alt="D & P Roofing and Building Ltd" width="500" height="76">
     <button class="mnav__close" type="button" aria-label="Close menu"><span></span><span></span></button>
   </div>
+  <a class="mnav__emg" href="tel:+447587415299"><span class="emg__dot" aria-hidden="true"></span>Emergency? Call 07587 415299</a>
   <nav class="mnav__links" aria-label="Main">
     <a href="#services">Services</a>
     <a href="#craft">How we work</a>
