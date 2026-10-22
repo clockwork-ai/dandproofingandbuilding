@@ -340,6 +340,27 @@ a.big:hover{opacity:.85}
 .work .swipe,.work .swipe.from-right{border-radius:14px}
 @media (prefers-reduced-motion:reduce){.swipe,.swipe.from-right{clip-path:none;transition:none}.swipe img{transform:none;transition:none}}
 
+/* ---------- 2b the build: scroll-scrubbed roof time-lapse ---------- */
+.buildact{background:#0A1B3D}
+.buildact .sc-stage__poster,.buildact video{object-position:50% 50%}
+.build__shade{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to bottom,rgba(6,18,42,.88),rgba(6,18,42,.35) 26%,transparent 42%),linear-gradient(to top,rgba(6,18,42,.85),transparent 30%)}
+.build__head{position:absolute;z-index:3;left:var(--sc-gutter);right:var(--sc-gutter);top:calc(var(--bar-h) + var(--emg-h) + 3vh);color:#fff;max-width:52rem}
+.build__head p{text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.build__head h2{font-size:clamp(2rem,4.6vw,3.6rem);color:#fff}
+.build__head h2::before{content:"";display:block;width:56px;height:6px;border-radius:3px;background:#DE213A;margin-bottom:16px}
+.build__head p{margin:10px 0 0;color:#DCE7F6;font-size:clamp(1rem,1.4vw,1.15rem)}
+.build__steps{list-style:none;margin:0;padding:0;position:absolute;z-index:3;left:var(--sc-gutter);bottom:calc(var(--sc-6) + 22px);display:grid}
+.build__steps li{grid-area:1/1;display:inline-flex;align-items:center;gap:12px;padding:10px 18px 10px 10px;border-radius:14px;background:#fff;color:#111A26;font-weight:600;font-size:clamp(15px,1.5vw,18px);box-shadow:0 2px 4px rgba(0,0,0,.3),0 18px 40px -16px rgba(0,0,0,.7);width:max-content;max-width:calc(100vw - 2 * var(--sc-gutter))}
+.build__steps b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#DE213A;color:#fff;font-family:var(--sc-font-display);font-size:15px;flex:none}
+.build__cap{position:absolute;z-index:3;left:var(--sc-gutter);bottom:var(--sc-5);margin:0;font-size:12.5px;color:rgba(255,255,255,.8)}
+@media (max-width:700px){
+  .buildact [data-sc-stage] .sc-stage__poster,.buildact [data-sc-stage] video{object-fit:contain!important;object-position:50% 52%!important;background:#0A1B3D}
+  .build__shade{background:linear-gradient(to bottom,rgba(6,18,42,.95),rgba(6,18,42,.6) 30%,transparent 45%),linear-gradient(to top,rgba(6,18,42,.95),transparent 34%)}
+  .build__head{top:calc(var(--bar-h) + var(--emg-h) + 2vh)}
+  .build__steps{bottom:calc(var(--sc-6) + 96px)}
+  .build__cap{bottom:calc(var(--sc-6) + 64px);right:var(--sc-gutter);font-size:11.5px}
+}
+
 /* ---------- white divider between the blue sections ---------- */
 .divide{position:relative;z-index:3;height:10px;background:#fff;display:grid;place-items:center;box-shadow:0 -1px 0 rgba(255,255,255,.4),0 10px 30px -18px rgba(0,0,0,.6)}
 .divide::after{content:"";width:72px;height:10px;background:#DE213A}
@@ -622,6 +643,29 @@ a.big:hover{opacity:.85}
       <p data-sc-kinetic="lines">Then they called <em>D &amp; P Roofing and Building.</em></p>
       <cite>Dale runs the jobs. Chrissy runs the office. Paul and the lads do the work.</cite>
     </blockquote>
+  </div>
+</section>
+
+<div class="divide" aria-hidden="true"></div>
+
+<!-- 2b · THE BUILD: scrub, AI time-lapse from D & P's real drone photo of the job -->
+<section id="build" class="buildact" data-sc-act="scrub" data-sc-span="2.4" data-sc-dwell="0.1">
+  <div data-sc-stage>
+    <img class="sc-stage__poster" src="assets/build-poster.jpg" alt="" width="1920" height="1080">
+    <video data-sc-scrub data-sc-src="assets/build.mp4" data-sc-src-mobile="assets/build-m.mp4" muted playsinline aria-label="Time-lapse illustration of a D and P re-roof from above: the stripped roof gets a new membrane, battens, red-brown tiles and a ridge"></video>
+    <div class="build__shade" aria-hidden="true"></div>
+    <div class="build__head">
+      <h2 class="sc-display">Watch a D&nbsp;&amp;&nbsp;P roof go&nbsp;on.</h2>
+      <p>Scroll to build it, from bare timbers to the last ridge tile.</p>
+    </div>
+    <ol class="build__steps">
+      <li data-sc-cue="0 0.2 0 0.06"><b>1</b>Stripped back to the timbers</li>
+      <li data-sc-cue="0.17 0.38 0.06 0.06"><b>2</b>Membrane and battens on</li>
+      <li data-sc-cue="0.35 0.62 0.06 0.06"><b>3</b>Tiles laid, row by row</li>
+      <li data-sc-cue="0.59 0.8 0.06 0.06"><b>4</b>Ridge on</li>
+      <li data-sc-cue="0.77 1 0.06 0.02"><b>5</b>Watertight, with a 10 year guarantee</li>
+    </ol>
+    <p class="build__cap">Illustration of a D &amp; P re-roof, based on our drone photo of the job.</p>
   </div>
 </section>
 
