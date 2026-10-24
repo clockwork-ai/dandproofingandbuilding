@@ -98,6 +98,14 @@
     phoneHref: "tel:+447587415299",
     phone: "07587 415299",
     whatsappHref: "https://wa.me/447587415299",
+    actions: [
+      { id: "quote", label: "Get a quote", href: "/contact-us/" },
+      { id: "phone", label: "Call Dale", href: "tel:+447587415299" },
+      { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/447587415299" },
+      { id: "areas", label: "Areas we cover", href: "/locations/" },
+      { id: "gallery", label: "See the gallery", href: "/gallery/" },
+      { id: "survey", label: "Drone survey", href: "/drone-roof-survey/" },
+    ],
   };
 
   function seenNudge() {
@@ -123,6 +131,69 @@
     log.appendChild(p);
     log.scrollTop = log.scrollHeight;
     return p;
+  }
+
+  function splitActions(acc) {
+    const mark = "\u2063actions:";
+    const idx = acc.indexOf(mark);
+    if (idx === -1) {
+      const partial = acc.match(/\n?\u2063(?:a(?:c(?:t(?:i(?:o(?:n(?::[a-z,]*)?)?)?)?)?)?)?$/);
+      if (partial && partial[0].includes("\u2063")) return { text: acc.slice(0, partial.index), actions: [] };
+      return { text: acc, actions: [] };
+    }
+    const raw = acc.slice(idx + mark.length).split(",").map((item) => item.trim()).filter(Boolean);
+    return { text: acc.slice(0, idx).replace(/\n$/, ""), actions: raw.slice(0, 3) };
+  }
+
+  function renderActions(bubble, ids) {
+    const next = bubble.nextElementSibling;
+    if (next && next.classList.contains("cw-actions")) next.remove();
+    const known = (config && config.actions) || fallback.actions;
+    const row = document.createElement("div");
+    row.className = "cw-actions";
+    ids.slice(0, 3).forEach((id) => {
+      const action = known.find((item) => item.id === id);
+      if (!action || !action.label || !action.href) return;
+      const href = safeHref(action.href, "");
+      if (!href) return;
+      const link = document.createElement("a");
+      link.className = "cw-action";
+      link.href = href;
+      link.textContent = action.label;
+      if (link.protocol === "https:" && link.origin !== location.origin) {
+        link.target = "_blank";
+        link.rel = "noopener";
+      }
+      row.appendChild(link);
+    });
+    if (!row.childElementCount) return;
+    bubble.after(row);
+  }
+
+  function narrowScreen() {
+    return window.matchMedia("(max-width: 860px)").matches;
+  }
+
+  function fitViewport() {
+    const vv = window.visualViewport;
+    const open = root.classList.contains("is-open") && narrowScreen();
+    if (!vv || !open) {
+      document.documentElement.classList.toggle("cw-lock", root.classList.contains("is-open") && narrowScreen());
+      root.style.removeProperty("--cw-vv-top");
+      root.style.removeProperty("--cw-vv-left");
+      root.style.removeProperty("--cw-vv-w");
+      root.style.removeProperty("--cw-vv-h");
+      panel.classList.remove("is-keyboard");
+      return;
+    }
+    document.documentElement.classList.toggle("cw-lock", true);
+    const keyboard = window.innerHeight - vv.height > 80;
+    root.style.setProperty("--cw-vv-top", `${vv.offsetTop}px`);
+    root.style.setProperty("--cw-vv-left", `${vv.offsetLeft}px`);
+    root.style.setProperty("--cw-vv-w", `${vv.width}px`);
+    root.style.setProperty("--cw-vv-h", `${vv.height}px`);
+    panel.classList.toggle("is-keyboard", keyboard);
+    log.scrollTop = log.scrollHeight;
   }
 
   function pagePath() {
@@ -253,8 +324,14 @@
     root.classList.toggle("is-open", open);
     panel.hidden = !open;
     launch.setAttribute("aria-expanded", open ? "true" : "false");
-    if (open) input.focus();
-    else launch.focus();
+    document.documentElement.classList.toggle("cw-lock", open && narrowScreen());
+    if (open) {
+      fitViewport();
+      input.focus({ preventScroll: true });
+    } else {
+      fitViewport();
+      launch.focus();
+    }
   }
 
   async function loadConfig() {
@@ -297,19 +374,26 @@
       const reader = response.body && response.body.getReader();
       const decoder = new TextDecoder();
       let acc = "";
+      const paint = () => {
+        const parsed = splitActions(acc);
+        bubble.textContent = parsed.text || "…";
+        renderActions(bubble, parsed.actions);
+        log.scrollTop = log.scrollHeight;
+      };
       if (reader) {
         while (true) {
           const step = await reader.read();
           if (step.done) break;
           acc += decoder.decode(step.value, { stream: true });
-          bubble.textContent = acc;
-          log.scrollTop = log.scrollHeight;
+          paint();
         }
         acc += decoder.decode();
       } else {
         acc = await response.text();
       }
-      bubble.textContent = acc || "Sorry, I missed that.";
+      const parsed = splitActions(acc);
+      bubble.textContent = parsed.text || "Sorry, I missed that.";
+      renderActions(bubble, parsed.actions);
       const picked = replyFor(content);
       if (picked && config && config.calculatorHref) {
         const note = document.createElement("p");
@@ -321,6 +405,7 @@
         log.appendChild(note);
       }
       messages.push({ role: "assistant", content: bubble.textContent });
+      fitViewport();
       if (wantsDetails(bubble.textContent)) openForm();
     } catch {
       bubble.className = "cw-msg cw-msg--note";
@@ -329,7 +414,7 @@
     } finally {
       busy = false;
       send.disabled = false;
-      input.focus();
+      input.focus({ preventScroll: true });
     }
   }
 
@@ -378,7 +463,8 @@
         body: JSON.stringify({ lead: data, page: pagePath() }),
       });
       const payload = await response.json().catch(() => ({}));
-      add(response.ok ? "assistant" : "note", payload.message || payload.error || "Sorry, that didn't send.");
+      const note = add(response.ok ? "assistant" : "note", payload.message || payload.error || "Sorry, that didn't send.");
+      if (response.ok && Array.isArray(payload.actions)) renderActions(note, payload.actions);
       if (response.ok) {
         form.reset();
         form.hidden = true;
@@ -393,5 +479,15 @@
   });
 
   const ready = loadConfig();
-  launch.addEventListener("click", () => { ready.then(() => input.focus()); }, { once: true });
+  launch.addEventListener("click", () => { ready.then(() => input.focus({ preventScroll: true })); }, { once: true });
+  if (window.visualViewport) {
+    visualViewport.addEventListener("resize", fitViewport);
+    visualViewport.addEventListener("scroll", fitViewport);
+  }
+  addEventListener("resize", fitViewport);
+  input.addEventListener("focus", () => {
+    requestAnimationFrame(fitViewport);
+    setTimeout(fitViewport, 60);
+    setTimeout(fitViewport, 320);
+  });
 })();

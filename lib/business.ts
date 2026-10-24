@@ -10,6 +10,8 @@
  * exact string is published on the site and listed in `allowedPrices`.
  */
 
+export type ReplyActionId = "quote" | "phone" | "whatsapp" | "areas" | "gallery" | "survey";
+
 export type BusinessConfig = {
   name: string;
   /** AI Gateway model id. Override at runtime with AI_GATEWAY_MODEL. */
@@ -59,6 +61,14 @@ export type BusinessConfig = {
   };
   /** Pathnames the server will mention back to the model. Anything else is ignored. */
   pages: string[];
+  /**
+   * Spoken replacements for a path or host the model should not write.
+   * `actions` are the tappable buttons the widget may show under a reply.
+   */
+  replyLinks: { path?: string; prefix?: string; host?: string; words: string; action?: ReplyActionId }[];
+  /** Phrases in a finished reply that should grow a button, even with no path left. */
+  actionCues: { action: ReplyActionId; pattern: string }[];
+  actions: { id: ReplyActionId; label: string; href: string }[];
   /** Teaser above the launcher. The full panel stays closed until they click. */
   nudge: {
     text: string;
@@ -122,8 +132,8 @@ export const business: BusinessConfig = {
   voice:
     "Plain British English, like a helpful person in the office. Short. Contractions are fine. No jargon, no American spelling, no emoji, no exclamation marks, and no AI buzzwords. Two or three sentences, then stop. You are the D & P assistant, not Dale, not Chrissy and not Paul.",
   rules: [
-    "Answer only from the knowledge below. If it is not there, say you don't have that and point them to the phone, WhatsApp or the quote page.",
-    "No prices, estimates or ranges in pounds, digits or words, unless the exact string is in allowed prices. Nothing on the site states a job price. Say Dale will quote after seeing the job. You may say a quote is free, and that the drone survey is free with every quote, because the site says that. Discounts for NHS workers and OAPs are mentioned, but no amount is published, so do not invent a percentage.",
+    "Answer only from the knowledge below. If it is not there, say you don't have that and point them to the phone, WhatsApp or the quote page. Never write a URL, a web address, a host, or a path. That includes /contact-us, /quote, /contact, /locations, /gallery, wa.me, and anything starting with https. Name it in words: the quote page, the areas page, the gallery, the drone survey page, WhatsApp, or the phone number as digits. Do not say this link. The chat adds the button. An email address is allowed.",
+    "No prices, estimates or ranges in pounds, digits or words, unless the exact string is in allowed prices. Nothing on the site states a job price. Do not say what a price depends on, and do not call a job cheap, reasonable or competitive. Say Dale will quote after seeing the job. You may say a quote is free, and that the drone survey is free with every quote, because the site says that. Discounts for NHS workers and OAPs are mentioned, but no amount is published, so do not invent a percentage.",
     "Never invent reviews, ratings, years in business, accreditations, guarantees, insurance, company numbers or job examples. Do not mention insurance at all. If a review score, a guarantee or a year is in the knowledge, use it only as written there. Do not quote a customer except the two short lines in the knowledge, and do not add to them.",
     "Emergencies: if there is an active leak, storm damage that is letting water in, or any danger, the first sentence must tell them to keep clear of water near electrics and to ring D & P directly on 07587 415299. Do not promise a callout time. The site does not give one. Out of hours, they can also WhatsApp a photo and their postcode, and the site says the team will get back as soon as they can.",
     "Reflect the visitor's problem before you steer them on: a leak, slipped tiles, storm damage, or a quote. Then point them to a quote, a phone call, or WhatsApp. Those are the actions already on the site.",
@@ -196,10 +206,10 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
       "When someone wants a quote, a survey, a repair, or for someone to look at a job, your next reply must ask for four things: their name, their phone number, their postcode, and the job. In that same reply, ask them to WhatsApp a photo of the problem if they can. This chat cannot take picture files.",
       "When you have the name, phone, postcode and job, call saveLead before you confirm. Set photos to WhatsApp if they will send pictures, or none yet if they cannot. Do not call saveLead with blanks or guesses. Do not invent a postcode.",
       "Do not say the details were saved unless saveLead returns ok. Never say the lead was emailed or texted. This chat does not send email. If notified is true, you may say the alert hook accepted the lead. If notified is false or missing, say it is saved for Dale and has not been emailed.",
-      "After a successful save, say Dale will quote after seeing the job, and give the phone number and the WhatsApp link so they can send photos.",
-      "If saveLead fails, do not say the details were saved. Give them the phone, WhatsApp and the quote page.",
+      "After a successful save, say Dale will quote after seeing the job, and give the phone number so they can WhatsApp photos. Do not paste a link or a path.",
+      "If saveLead fails, do not say the details were saved. Give them the phone, WhatsApp and the quote page, in words only.",
       "If they are only asking a question, answer it. Do not demand their details first.",
-      "Quote page: /contact-us/. Phone: 07587 415299. WhatsApp: https://wa.me/447587415299. Email: info@dandproofingandbuilding.co.uk.",
+      "Phone: 07587 415299. Email: info@dandproofingandbuilding.co.uk. Say WhatsApp and the quote page in words. Never write the address or the path.",
     ].join(" "),
   },
   replies: {
@@ -223,6 +233,39 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
     maxAssistantChars: 1200,
   },
   pages,
+  replyLinks: [
+    { path: "/contact-us", words: "the quote page", action: "quote" },
+    { path: "/contact", words: "the quote page", action: "quote" },
+    { path: "/quote", words: "the quote page", action: "quote" },
+    { path: "/#quote", words: "the quote page", action: "quote" },
+    { path: "/locations", words: "the areas page", action: "areas" },
+    { path: "/gallery", words: "the gallery", action: "gallery" },
+    { path: "/drone-roof-survey", words: "the drone survey page", action: "survey" },
+    { path: "/free-drone-survey", words: "the drone survey page", action: "survey" },
+    { prefix: "/roofers-", words: "the roofing page for that area", action: "areas" },
+    { prefix: "/builders-", words: "the building page for that area", action: "areas" },
+    { host: "wa.me", words: "WhatsApp", action: "whatsapp" },
+    { host: "api.whatsapp.com", words: "WhatsApp", action: "whatsapp" },
+    { host: "trustedtraders.which.co.uk", words: "Which? Trusted Traders" },
+    { host: "facebook.com", words: "Facebook" },
+    { host: "instagram.com", words: "Instagram" },
+  ],
+  actionCues: [
+    { action: "whatsapp", pattern: "\\bwhatsapp\\b" },
+    { action: "phone", pattern: "\\b(ring|call|phone)\\b|07587\\s*415299" },
+    { action: "quote", pattern: "\\bquotes?\\b" },
+    { action: "areas", pattern: "\\bareas page\\b" },
+    { action: "gallery", pattern: "\\bthe gallery\\b" },
+    { action: "survey", pattern: "\\bdrone survey\\b" },
+  ],
+  actions: [
+    { id: "quote", label: "Get a quote", href: "/contact-us/" },
+    { id: "phone", label: "Call Dale", href: "tel:+447587415299" },
+    { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/447587415299" },
+    { id: "areas", label: "Areas we cover", href: "/locations/" },
+    { id: "gallery", label: "See the gallery", href: "/gallery/" },
+    { id: "survey", label: "Drone survey", href: "/drone-roof-survey/" },
+  ],
   nudge: {
     text: "Leak, slipped tiles, or do you need a quote?",
     delayMs: 22000,

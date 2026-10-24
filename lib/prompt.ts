@@ -54,6 +54,11 @@ export function publicWidget(config: BusinessConfig) {
     phoneHref: config.links.phoneHref,
     phone: config.links.phone,
     whatsappHref: config.links.whatsapp,
+    actions: config.actions.slice(0, 6).map((action) => ({
+      id: action.id,
+      label: action.label,
+      href: action.href,
+    })),
     nudge: {
       ...config.nudge,
       replies: config.nudge.replies.slice(0, 3),

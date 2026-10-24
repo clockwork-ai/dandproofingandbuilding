@@ -3,7 +3,7 @@ import { z } from "zod";
 import { business } from "../lib/business.ts";
 import {
   clientKey,
-  createPriceStream,
+  createReplyStream,
   knownPage,
   normaliseMessages,
   sameOrigin,
@@ -85,6 +85,7 @@ export async function POST(request: Request): Promise<Response> {
       ok: true,
       notified: saved.notified,
       message: fill(template, parsed.lead.name),
+      actions: ["phone", "whatsapp"],
     });
   }
 
@@ -134,7 +135,13 @@ export async function POST(request: Request): Promise<Response> {
     },
   });
 
-  const guard = createPriceStream(business.allowedPrices, business.priceStandIn);
+  const guard = createReplyStream(
+    business.allowedPrices,
+    business.priceStandIn,
+    business.replyLinks,
+    business.actionCues,
+    business.actions.map((action) => action.id),
+  );
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {

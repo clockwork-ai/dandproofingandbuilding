@@ -1,4 +1,4 @@
-import type { BusinessConfig } from "./business.ts";
+import type { BusinessConfig, ReplyActionId } from "./business.ts";
 
 const buckets = new Map<string, { count: number; reset: number }>();
 
@@ -138,6 +138,213 @@ export function scrubPrices(text: string, allowed: readonly string[], standIn: s
   safe = safe.replace(MONEY, standIn).replace(WORD_PRICE, standIn);
   safe = safe.replace(/\u0000(\d+)\u0000/g, (_match, index: string) => slots[Number(index)] ?? "");
   return stripDashes(safe);
+}
+
+const ACTION_MARK = "\u2063actions:";
+const SITE_HOSTS = ["dandproofingandbuilding.co.uk", "localhost", "127.0.0.1"];
+
+type LinkRules = BusinessConfig["replyLinks"];
+type ActionCues = BusinessConfig["actionCues"];
+
+function isSiteHost(host: string): boolean {
+  const bare = host.toLowerCase().replace(/^www\./, "");
+  return SITE_HOSTS.includes(bare) || bare.endsWith(".vercel.app");
+}
+
+function pathKey(pathname: string, hash: string): string {
+  let path = pathname.toLowerCase();
+  if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
+  if (path.endsWith("/index.html")) path = path.slice(0, -"/index.html".length) || "/";
+  else if (path.endsWith(".html")) path = path.slice(0, -".html".length);
+  if ((path === "/" || path === "") && hash === "#quote") return "/#quote";
+  return path || "/";
+}
+
+function remember(action: ReplyActionId | undefined, actions: Set<ReplyActionId>): void {
+  if (action) actions.add(action);
+}
+
+function lookupPath(key: string, rules: LinkRules, actions: Set<ReplyActionId>): string | undefined {
+  const exact = rules.find((rule) => rule.path && rule.path.toLowerCase() === key);
+  if (exact) {
+    remember(exact.action, actions);
+    return exact.words;
+  }
+  const prefixed = rules.find((rule) => rule.prefix && key.startsWith(rule.prefix.toLowerCase()));
+  if (prefixed) {
+    remember(prefixed.action, actions);
+    return prefixed.words;
+  }
+  return undefined;
+}
+
+function lookupHost(host: string, rules: LinkRules, actions: Set<ReplyActionId>): string | undefined {
+  const bare = host.toLowerCase().replace(/^www\./, "");
+  const rule = rules.find((item) => item.host && bare === item.host.toLowerCase().replace(/^www\./, ""));
+  if (!rule) return undefined;
+  remember(rule.action, actions);
+  return rule.words;
+}
+
+function splitEdge(raw: string): { core: string; edge: string } {
+  const match = raw.match(/^(.*?)([.,;:!?)\]]*)$/);
+  return { core: match?.[1] || raw, edge: match?.[2] ?? "" };
+}
+
+/** Spoken form of a URL or path. A removed address still keeps its closing punctuation. */
+function wordsForTarget(raw: string, rules: LinkRules, actions: Set<ReplyActionId>): string {
+  const { core, edge } = splitEdge(raw);
+  const finish = (words: string) => (words ? `${words}${edge}` : edge);
+
+  if (/^tel:/i.test(core)) {
+    actions.add("phone");
+    return finish("");
+  }
+  if (/^mailto:/i.test(core)) return finish(core.replace(/^mailto:/i, ""));
+
+  let href = core;
+  if (/^www\./i.test(href) || /^wa\.me\//i.test(href)) href = `https://${href}`;
+  else if (/^(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/|$)/i.test(href)) href = `https://${href}`;
+
+  if (core.startsWith("/")) {
+    const hash = core.includes("#") ? `#${core.split("#")[1]?.split(/[?\s]/)[0] ?? ""}`.toLowerCase() : "";
+    const pathname = core.split("#")[0]?.split("?")[0] ?? core;
+    return finish(lookupPath(pathKey(pathname, hash), rules, actions) ?? "the site");
+  }
+
+  try {
+    const url = new URL(href);
+    const named = lookupHost(url.host, rules, actions);
+    if (named && !isSiteHost(url.host)) return finish(named);
+    if (isSiteHost(url.host)) {
+      const key = pathKey(url.pathname, url.hash.toLowerCase());
+      return finish(lookupPath(key, rules, actions) ?? (key === "/" ? "the home page" : "the site"));
+    }
+    return finish(named ?? "");
+  } catch {
+    return finish("");
+  }
+}
+
+function replaceLinks(text: string, rules: LinkRules, actions: Set<ReplyActionId>): string {
+  let safe = text.replace(/\n?\u2063actions:[a-z,]*/g, "");
+  safe = safe.replace(/<a\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>[\s\S]*?<\/a>/gi, (_match, href: string) =>
+    wordsForTarget(href, rules, actions),
+  );
+  safe = safe.replace(/\[([^\]]*)\]\(([^)\s]+)\)/g, (_match, label: string, url: string) => {
+    const words = wordsForTarget(url, rules, actions);
+    if (words) return words;
+    return label.replace(/https?:\/\/\S+|\/[A-Za-z][\w./-]*/g, "").trim();
+  });
+  safe = safe.replace(
+    /(?:this|the)\s+(?:link|url|website)\s*:\s*((?:https?:\/\/|www\.)[^\s<>"')\]]+|wa\.me\/[^\s<>"')\]]+|\/(?:#[A-Za-z][\w-]*|[A-Za-z][\w-]*)(?:\/[\w.-]*)*\/?)/gi,
+    (_match, target: string) => wordsForTarget(target, rules, actions),
+  );
+  safe = safe.replace(
+    /(?<![\w@])(?:(?:https?:\/\/|www\.)[^\s<>"')\]]+|wa\.me\/[^\s<>"')\]]+|(?:[a-z0-9-]+\.)+(?:co\.uk|com|app)(?:\/[^\s<>"')\]]*)?|tel:\+?[\d\s()-]+|mailto:[^\s<>"')\]]+)/gi,
+    (target) => wordsForTarget(target, rules, actions),
+  );
+  safe = safe.replace(
+    /(^|[\s(["'])(\/(?:#[A-Za-z][\w-]*|[A-Za-z][\w-]*)(?:\/[\w.-]*)*\/?)/g,
+    (_match, lead: string, path: string) => `${lead}${wordsForTarget(path, rules, actions)}`,
+  );
+  safe = safe.replace(/<[^>\n]+>/g, "");
+  return safe
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/\s+([.,;:!?])/g, "$1")
+    .replace(/\(\s*\)/g, "")
+    .replace(/\s+,/g, ",");
+}
+
+export function inferActions(
+  text: string,
+  cues: ActionCues,
+  order: readonly ReplyActionId[],
+  max = 3,
+): ReplyActionId[] {
+  const found = new Set<ReplyActionId>();
+  for (const cue of cues) {
+    if (new RegExp(cue.pattern, "i").test(text)) found.add(cue.action);
+  }
+  return order.filter((id) => found.has(id)).slice(0, max);
+}
+
+export function scrubReply(
+  text: string,
+  allowed: readonly string[],
+  standIn: string,
+  rules: LinkRules,
+  cues: ActionCues,
+  order: readonly ReplyActionId[],
+): { text: string; actions: ReplyActionId[] } {
+  const found = new Set<ReplyActionId>();
+  const safe = replaceLinks(scrubPrices(text, allowed, standIn), rules, found);
+  for (const id of inferActions(safe, cues, order, order.length)) found.add(id);
+  return { text: safe, actions: order.filter((id) => found.has(id)).slice(0, 3) };
+}
+
+function holdFrom(held: string): number {
+  const cuts: number[] = [];
+  const price =
+    held.match(/(?:£|\$|€|gbp\s?)\d[\d,]*(?:\.\d*)?$/i) ??
+    held.match(/(?:£|\$|€)$/) ??
+    held.match(/\d[\d,]{0,8}$/);
+  if (price?.index != null) cuts.push(price.index);
+  const link = held.match(
+    /(?:https?:?\/?\/?\S*|www\.\S*|wa\.me\/?\S*|tel:\+?[\d\s()-]*|mailto:\S*|\/(?:#[A-Za-z][\w-]*|[A-Za-z][\w.-]*)(?:\/[\w.-]*)*\/?)$/i,
+  );
+  if (link?.index != null) {
+    const before = held.slice(0, link.index);
+    const lead = before.match(/(?:(?:use|visit|see|open)\s+)?(?:this|the)\s+(?:link|url|website)\s*:\s*$/i);
+    cuts.push(lead ? link.index - lead[0].length : link.index);
+  } else {
+    const lead = held.match(/(?:(?:use|visit|see|open)\s+)?(?:this|the)\s+(?:link|url|website)\s*:\s*$/i);
+    if (lead?.index != null) cuts.push(lead.index);
+  }
+  if (!cuts.length) return held.length;
+  return Math.min(...cuts);
+}
+
+/** Price, dash and raw-link scrubber. The action marker is added only on flush. */
+export function createReplyStream(
+  allowed: readonly string[],
+  standIn: string,
+  rules: LinkRules,
+  cues: ActionCues,
+  order: readonly ReplyActionId[],
+) {
+  let held = "";
+  let visible = "";
+  const found = new Set<ReplyActionId>();
+  const release = (ready: string) => {
+    if (!ready) return "";
+    const cleaned = replaceLinks(scrubPrices(ready, allowed, standIn), rules, found);
+    visible += cleaned;
+    return cleaned;
+  };
+  const push = (chunk: string) => {
+    held += chunk;
+    const cut = holdFrom(held);
+    const ready = held.slice(0, cut);
+    held = held.slice(cut);
+    return release(ready);
+  };
+  const flush = () => {
+    let tail = release(held);
+    held = "";
+    const dropped = tail.replace(
+      /(?:(?:use|visit|see|open)\s+)?(?:this|the)\s+(?:link|url|website)\s*:\s*$/i,
+      "",
+    );
+    if (dropped !== tail) {
+      visible = visible.slice(0, visible.length - tail.length) + dropped;
+      tail = dropped;
+    }
+    for (const id of inferActions(visible, cues, order, order.length)) found.add(id);
+    const picked = order.filter((id) => found.has(id)).slice(0, 3);
+    return picked.length ? `${tail}\n${ACTION_MARK}${picked.join(",")}` : tail;
+  };
+  return { push, flush };
 }
 
 /** Holds back a trailing fragment that might still be a price. */

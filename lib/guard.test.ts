@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { business } from "./business.ts";
 import {
   createPriceStream,
+  createReplyStream,
   isPhone,
   isValidContact,
   knownPage,
@@ -9,6 +11,7 @@ import {
   normalisePostcode,
   resetRateLimits,
   scrubPrices,
+  scrubReply,
   stripDashes,
   takeRateLimit,
 } from "./guard.ts";
@@ -120,6 +123,69 @@ test("phone and postcode checks", () => {
   assert.equal(normalisePostcode("bl53hb"), "BL5 3HB");
   assert.equal(normalisePostcode("M33 1AA"), "M33 1AA");
   assert.equal(normalisePostcode("Bolton"), null);
+});
+
+const order = business.actions.map((action) => action.id);
+
+function clean(text: string) {
+  return scrubReply(
+    text,
+    business.allowedPrices,
+    business.priceStandIn,
+    business.replyLinks,
+    business.actionCues,
+    order,
+  );
+}
+
+test("replaces raw paths and urls with words", () => {
+  const out = clean(
+    "See /contact-us/, /quote or /contact. Photos go to https://wa.me/447587415299. Cover is on /locations/.",
+  );
+  assert.equal(out.text.includes("http"), false);
+  assert.equal(out.text.includes("wa.me"), false);
+  assert.equal(out.text.includes("/"), false);
+  assert.match(out.text, /the quote page/);
+  assert.match(out.text, /WhatsApp/);
+  assert.match(out.text, /the areas page/);
+  assert.deepEqual(out.actions, ["quote", "whatsapp", "areas"]);
+});
+
+test("keeps the phone number and the email, and drops a review url", () => {
+  const out = clean(
+    "Rated on https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/ today. Email info@dandproofingandbuilding.co.uk or ring 07587 415299.",
+  );
+  assert.equal(out.text.includes("http"), false);
+  assert.equal(out.text.includes("which.co.uk"), false);
+  assert.match(out.text, /Which\? Trusted Traders/);
+  assert.match(out.text, /info@dandproofingandbuilding\.co\.uk/);
+  assert.match(out.text, /07587 415299/);
+  assert.equal(out.actions[0], "phone");
+  assert.equal(out.text.includes("\u2013"), false);
+  assert.equal(out.text.includes("\u2014"), false);
+});
+
+test("turns a streamed link and a price into words and a button marker", () => {
+  const stream = createReplyStream(
+    business.allowedPrices,
+    business.priceStandIn,
+    business.replyLinks,
+    business.actionCues,
+    order,
+  );
+  const head = stream.push("Use this link: https://wa");
+  const mid = stream.push(".me/447587415299. A new roof is £8500.");
+  const end = stream.flush();
+  const all = head + mid + end;
+  assert.equal(head.includes("http"), false);
+  assert.equal(all.includes("http"), false);
+  assert.equal(all.includes("wa.me"), false);
+  assert.equal(all.includes("£"), false);
+  assert.equal(all.includes("8500"), false);
+  assert.match(all, /WhatsApp/);
+  assert.match(all, /\u2063actions:quote,whatsapp/);
+  assert.equal(all.includes("\u2013"), false);
+  assert.equal(all.includes("\u2014"), false);
 });
 
 test("known pages ignore a trailing slash", () => {
