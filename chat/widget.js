@@ -345,7 +345,9 @@
   }
 
   function wantsDetails(text) {
-    return /your name|phone|postcode|quote details|whatsapp a photo/i.test(text);
+    const asksForName = /\byour name\b/i.test(text);
+    const asksForReach = /\b(phone|postcode)\b/i.test(text);
+    return asksForName && asksForReach;
   }
 
   async function ask(text) {
