@@ -252,15 +252,15 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
   ],
   actionCues: [
     { action: "whatsapp", pattern: "\\bwhatsapp\\b" },
-    { action: "phone", pattern: "\\b(ring|call|phone)\\b|07587\\s*415299" },
+    { action: "phone", pattern: "\\b(ring|call)\\b|07587\\s*415299" },
     { action: "quote", pattern: "\\bquotes?\\b" },
     { action: "areas", pattern: "\\bareas page\\b" },
     { action: "gallery", pattern: "\\bthe gallery\\b" },
     { action: "survey", pattern: "\\bdrone survey\\b" },
   ],
   actions: [
-    { id: "quote", label: "Get a quote", href: "/contact-us/" },
     { id: "phone", label: "Call Dale", href: "tel:+447587415299" },
+    { id: "quote", label: "Get a quote", href: "/contact-us/" },
     { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/447587415299" },
     { id: "areas", label: "Areas we cover", href: "/locations/" },
     { id: "gallery", label: "See the gallery", href: "/gallery/" },
