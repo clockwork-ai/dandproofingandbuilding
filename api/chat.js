@@ -2,6 +2,25 @@
 import { isStepCount, streamText, tool } from "ai";
 import { z } from "zod";
 
+// lib/which.json
+var which_default = {
+  count: 143,
+  rating: "5.0",
+  checkedOn: "2026-11-03",
+  profileUrl: "https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/"
+};
+
+// lib/which.ts
+function checkWhich(value) {
+  const w = value;
+  if (!w || typeof w !== "object") throw new Error("lib/which.json is not an object");
+  if (!Number.isInteger(w.count) || w.count <= 0) throw new Error(`lib/which.json "count" must be a whole number above 0, got ${JSON.stringify(w.count)}`);
+  if (typeof w.rating !== "string" || !/^[0-5]\.\d$/.test(w.rating)) throw new Error(`lib/which.json "rating" must look like "5.0", got ${JSON.stringify(w.rating)}`);
+  if (typeof w.profileUrl !== "string" || !w.profileUrl.startsWith("https://trustedtraders.which.co.uk/")) throw new Error(`lib/which.json "profileUrl" must be the Which? profile link`);
+  return w;
+}
+var which = checkWhich(which_default);
+
 // lib/business.ts
 var towns = [
   "altrincham",
@@ -42,8 +61,8 @@ var business = {
   model: "openai/gpt-4.1-mini",
   voice: "Plain British English, like a helpful person in the office. Short. Contractions are fine. No jargon, no American spelling, no emoji, no exclamation marks, and no AI buzzwords. Two or three sentences, then stop. You are the D & P assistant, not Dale, not Chrissy and not Paul.",
   rules: [
-    "Answer only from the knowledge below. If it is not there, say you don't have that and point them to the phone, WhatsApp or the quote page.",
-    "No prices, estimates or ranges in pounds, digits or words, unless the exact string is in allowed prices. Nothing on the site states a job price. Say Dale will quote after seeing the job. You may say a quote is free, and that the drone survey is free with every quote, because the site says that. Discounts for NHS workers and OAPs are mentioned, but no amount is published, so do not invent a percentage.",
+    "Answer only from the knowledge below. If it is not there, say you don't have that and point them to the phone, WhatsApp or the quote page. Never write a URL, a web address, a host, or a path. That includes /contact-us, /quote, /contact, /locations, /gallery, wa.me, and anything starting with https. Name it in words: the quote page, the areas page, the gallery, the drone survey page, WhatsApp, or the phone number as digits. Do not say this link. The chat adds the button. An email address is allowed.",
+    "No prices, estimates or ranges in pounds, digits or words, unless the exact string is in allowed prices. Nothing on the site states a job price. Do not say what a price depends on, and do not call a job cheap, reasonable or competitive. Say Dale will quote after seeing the job. You may say a quote is free, and that the drone survey is free with every quote, because the site says that. Discounts for NHS workers and OAPs are mentioned, but no amount is published, so do not invent a percentage.",
     "Never invent reviews, ratings, years in business, accreditations, guarantees, insurance, company numbers or job examples. Do not mention insurance at all. If a review score, a guarantee or a year is in the knowledge, use it only as written there. Do not quote a customer except the two short lines in the knowledge, and do not add to them.",
     "Emergencies: if there is an active leak, storm damage that is letting water in, or any danger, the first sentence must tell them to keep clear of water near electrics and to ring D & P directly on 07587 415299. Do not promise a callout time. The site does not give one. Out of hours, they can also WhatsApp a photo and their postcode, and the site says the team will get back as soon as they can.",
     "Reflect the visitor's problem before you steer them on: a leak, slipped tiles, storm damage, or a quote. Then point them to a quote, a phone call, or WhatsApp. Those are the actions already on the site.",
@@ -89,7 +108,7 @@ Areas. Based on Park Road, Westhoughton BL5, working across the North West. The 
 - Bramhall, 20 miles, SK7
 Worsley is named on the home page and in the site details. It has no town page and no postcode of its own on the site. Westhoughton is the base, BL5, including the office postcode BL5 3HB. If a place is not in this list, it is not on the areas page. The areas page says: not on the list, ask anyway. Do not promise cover. Tell them to ring or WhatsApp the postcode so Dale can confirm. The areas page is /locations/.
 
-Trust, only as published. Which? Trusted Trader. Rated 5.0 from 142 reviews. Customer service, quality and value all score 5.0, and 99% of customers recommend them. Facebook: 887 followers, 100% recommend. Instagram: 731 posts, @dandp_roofing_and_buildingltd. The home page shows four of the 142 Which? reviews, and says to read every one on Which?: Highly Recommended (Jul 2026), Great Service (May 2026), Great work and service (May 2026), Realistically, would be a 10 Star Review (Jun 2026). Two short lines you may repeat exactly, and not extend: "They did not increase the roofing quote." and, from Nick Wilder, "completed to a very high standard and exactly at the price we were quoted." Thirty years on roofs and buildings across Bolton and Greater Manchester. Which? page: https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/
+Trust, only as published. Which? Trusted Trader. Rated ${which.rating} from ${which.count} reviews. Customer service, quality and value all score 5.0, and 99% of customers recommend them. Facebook: 887 followers, 100% recommend. Instagram: 731 posts, @dandp_roofing_and_buildingltd. The home page shows four of the ${which.count} Which? reviews, and says to read every one on Which?: Highly Recommended (Jul 2026), Great Service (May 2026), Great work and service (May 2026), Realistically, would be a 10 Star Review (Jun 2026). Two short lines you may repeat exactly, and not extend: "They did not increase the roofing quote." and, from Nick Wilder, "completed to a very high standard and exactly at the price we were quoted." Thirty years on roofs and buildings across Bolton and Greater Manchester. Which? page: https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/
 
 Work shown. The gallery and the home page show photos of their own jobs across Greater Manchester, with captions such as full re-roof, flat roof, dormer, bay roof, extension, brickwork, gutter, parapet, church roof repairs, a terrace re-roof in September 2026 and a new ridge in September 2026. Do not invent a street, a price or a story about a photo. The gallery is /gallery/. More photos are on Facebook and Instagram.
 
@@ -116,10 +135,10 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
       "When someone wants a quote, a survey, a repair, or for someone to look at a job, your next reply must ask for four things: their name, their phone number, their postcode, and the job. In that same reply, ask them to WhatsApp a photo of the problem if they can. This chat cannot take picture files.",
       "When you have the name, phone, postcode and job, call saveLead before you confirm. Set photos to WhatsApp if they will send pictures, or none yet if they cannot. Do not call saveLead with blanks or guesses. Do not invent a postcode.",
       "Do not say the details were saved unless saveLead returns ok. Never say the lead was emailed or texted. This chat does not send email. If notified is true, you may say the alert hook accepted the lead. If notified is false or missing, say it is saved for Dale and has not been emailed.",
-      "After a successful save, say Dale will quote after seeing the job, and give the phone number and the WhatsApp link so they can send photos.",
-      "If saveLead fails, do not say the details were saved. Give them the phone, WhatsApp and the quote page.",
+      "After a successful save, say Dale will quote after seeing the job, and give the phone number so they can WhatsApp photos. Do not paste a link or a path.",
+      "If saveLead fails, do not say the details were saved. Give them the phone, WhatsApp and the quote page, in words only.",
       "If they are only asking a question, answer it. Do not demand their details first.",
-      "Quote page: /contact-us/. Phone: 07587 415299. WhatsApp: https://wa.me/447587415299. Email: info@dandproofingandbuilding.co.uk."
+      "Phone: 07587 415299. Email: info@dandproofingandbuilding.co.uk. Say WhatsApp and the quote page in words. Never write the address or the path."
     ].join(" ")
   },
   replies: {
@@ -139,6 +158,39 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
     maxAssistantChars: 1200
   },
   pages,
+  replyLinks: [
+    { path: "/contact-us", words: "the quote page", action: "quote" },
+    { path: "/contact", words: "the quote page", action: "quote" },
+    { path: "/quote", words: "the quote page", action: "quote" },
+    { path: "/#quote", words: "the quote page", action: "quote" },
+    { path: "/locations", words: "the areas page", action: "areas" },
+    { path: "/gallery", words: "the gallery", action: "gallery" },
+    { path: "/drone-roof-survey", words: "the drone survey page", action: "survey" },
+    { path: "/free-drone-survey", words: "the drone survey page", action: "survey" },
+    { prefix: "/roofers-", words: "the roofing page for that area", action: "areas" },
+    { prefix: "/builders-", words: "the building page for that area", action: "areas" },
+    { host: "wa.me", words: "WhatsApp", action: "whatsapp" },
+    { host: "api.whatsapp.com", words: "WhatsApp", action: "whatsapp" },
+    { host: "trustedtraders.which.co.uk", words: "Which? Trusted Traders" },
+    { host: "facebook.com", words: "Facebook" },
+    { host: "instagram.com", words: "Instagram" }
+  ],
+  actionCues: [
+    { action: "whatsapp", pattern: "\\bwhatsapp\\b" },
+    { action: "phone", pattern: "\\b(ring|call)\\b|07587\\s*415299" },
+    { action: "quote", pattern: "\\bquotes?\\b" },
+    { action: "areas", pattern: "\\bareas page\\b" },
+    { action: "gallery", pattern: "\\bthe gallery\\b" },
+    { action: "survey", pattern: "\\bdrone survey\\b" }
+  ],
+  actions: [
+    { id: "phone", label: "Call Dale", href: "tel:+447587415299" },
+    { id: "quote", label: "Get a quote", href: "/contact-us/" },
+    { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/447587415299" },
+    { id: "areas", label: "Areas we cover", href: "/locations/" },
+    { id: "gallery", label: "See the gallery", href: "/gallery/" },
+    { id: "survey", label: "Drone survey", href: "/drone-roof-survey/" }
+  ],
   nudge: {
     text: "Leak, slipped tiles, or do you need a quote?",
     delayMs: 22e3,
@@ -266,20 +318,159 @@ function scrubPrices(text, allowed, standIn) {
   safe = safe.replace(/\u0000(\d+)\u0000/g, (_match, index) => slots[Number(index)] ?? "");
   return stripDashes(safe);
 }
-function createPriceStream(allowed, standIn) {
+var ACTION_MARK = "\u2063actions:";
+var SITE_HOSTS = ["dandproofingandbuilding.co.uk", "localhost", "127.0.0.1"];
+function isSiteHost(host) {
+  const bare = host.toLowerCase().replace(/^www\./, "");
+  return SITE_HOSTS.includes(bare) || bare.endsWith(".vercel.app");
+}
+function pathKey(pathname2, hash) {
+  let path = pathname2.toLowerCase();
+  if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
+  if (path.endsWith("/index.html")) path = path.slice(0, -"/index.html".length) || "/";
+  else if (path.endsWith(".html")) path = path.slice(0, -".html".length);
+  if ((path === "/" || path === "") && hash === "#quote") return "/#quote";
+  return path || "/";
+}
+function remember(action, actions) {
+  if (action) actions.add(action);
+}
+function lookupPath(key, rules, actions) {
+  const exact = rules.find((rule) => rule.path && rule.path.toLowerCase() === key);
+  if (exact) {
+    remember(exact.action, actions);
+    return exact.words;
+  }
+  const prefixed = rules.find((rule) => rule.prefix && key.startsWith(rule.prefix.toLowerCase()));
+  if (prefixed) {
+    remember(prefixed.action, actions);
+    return prefixed.words;
+  }
+  return void 0;
+}
+function lookupHost(host, rules, actions) {
+  const bare = host.toLowerCase().replace(/^www\./, "");
+  const rule = rules.find((item) => item.host && bare === item.host.toLowerCase().replace(/^www\./, ""));
+  if (!rule) return void 0;
+  remember(rule.action, actions);
+  return rule.words;
+}
+function splitEdge(raw) {
+  const match = raw.match(/^(.*?)([.,;:!?)\]]*)$/);
+  return { core: match?.[1] || raw, edge: match?.[2] ?? "" };
+}
+function wordsForTarget(raw, rules, actions) {
+  const { core, edge } = splitEdge(raw);
+  const finish = (words) => words ? `${words}${edge}` : edge;
+  if (/^tel:/i.test(core)) {
+    actions.add("phone");
+    return finish("");
+  }
+  if (/^mailto:/i.test(core)) return finish(core.replace(/^mailto:/i, ""));
+  let href = core;
+  if (/^www\./i.test(href) || /^wa\.me\//i.test(href)) href = `https://${href}`;
+  else if (/^(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/|$)/i.test(href)) href = `https://${href}`;
+  if (core.startsWith("/")) {
+    const hash = core.includes("#") ? `#${core.split("#")[1]?.split(/[?\s]/)[0] ?? ""}`.toLowerCase() : "";
+    const pathname2 = core.split("#")[0]?.split("?")[0] ?? core;
+    return finish(lookupPath(pathKey(pathname2, hash), rules, actions) ?? "the site");
+  }
+  try {
+    const url = new URL(href);
+    const named = lookupHost(url.host, rules, actions);
+    if (named && !isSiteHost(url.host)) return finish(named);
+    if (isSiteHost(url.host)) {
+      const key = pathKey(url.pathname, url.hash.toLowerCase());
+      return finish(lookupPath(key, rules, actions) ?? (key === "/" ? "the home page" : "the site"));
+    }
+    return finish(named ?? "");
+  } catch {
+    return finish("");
+  }
+}
+function replaceLinks(text, rules, actions) {
+  let safe = text.replace(/\n?\u2063actions:[a-z,]*/g, "");
+  safe = safe.replace(
+    /<a\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>[\s\S]*?<\/a>/gi,
+    (_match, href) => wordsForTarget(href, rules, actions)
+  );
+  safe = safe.replace(/\[([^\]]*)\]\(([^)\s]+)\)/g, (_match, label, url) => {
+    const words = wordsForTarget(url, rules, actions);
+    if (words) return words;
+    return label.replace(/https?:\/\/\S+|\/[A-Za-z][\w./-]*/g, "").trim();
+  });
+  safe = safe.replace(
+    /(?:this|the)\s+(?:link|url|website)\s*:\s*((?:https?:\/\/|www\.)[^\s<>"')\]]+|wa\.me\/[^\s<>"')\]]+|\/(?:#[A-Za-z][\w-]*|[A-Za-z][\w-]*)(?:\/[\w.-]*)*\/?)/gi,
+    (_match, target) => wordsForTarget(target, rules, actions)
+  );
+  safe = safe.replace(
+    /(?<![\w@])(?:(?:https?:\/\/|www\.)[^\s<>"')\]]+|wa\.me\/[^\s<>"')\]]+|(?:[a-z0-9-]+\.)+(?:co\.uk|com|app)(?:\/[^\s<>"')\]]*)?|tel:\+?[\d\s()-]+|mailto:[^\s<>"')\]]+)/gi,
+    (target) => wordsForTarget(target, rules, actions)
+  );
+  safe = safe.replace(
+    /(^|[\s(["'])(\/(?:#[A-Za-z][\w-]*|[A-Za-z][\w-]*)(?:\/[\w.-]*)*\/?)/g,
+    (_match, lead, path) => `${lead}${wordsForTarget(path, rules, actions)}`
+  );
+  safe = safe.replace(/<[^>\n]+>/g, "");
+  return safe.replace(/[ \t]{2,}/g, " ").replace(/\s+([.,;:!?])/g, "$1").replace(/\(\s*\)/g, "").replace(/\s+,/g, ",");
+}
+function inferActions(text, cues, order, max = 3) {
+  const found = /* @__PURE__ */ new Set();
+  for (const cue of cues) {
+    if (new RegExp(cue.pattern, "i").test(text)) found.add(cue.action);
+  }
+  return order.filter((id) => found.has(id)).slice(0, max);
+}
+function holdFrom(held) {
+  const cuts = [];
+  const price = held.match(/(?:£|\$|€|gbp\s?)\d[\d,]*(?:\.\d*)?$/i) ?? held.match(/(?:£|\$|€)$/) ?? held.match(/\d[\d,]{0,8}$/);
+  if (price?.index != null) cuts.push(price.index);
+  const link = held.match(
+    /(?:https?:?\/?\/?\S*|www\.\S*|wa\.me\/?\S*|tel:\+?[\d\s()-]*|mailto:\S*|\/(?:#[A-Za-z][\w-]*|[A-Za-z][\w.-]*)(?:\/[\w.-]*)*\/?)$/i
+  );
+  if (link?.index != null) {
+    const before = held.slice(0, link.index);
+    const lead = before.match(/(?:(?:use|visit|see|open)\s+)?(?:this|the)\s+(?:link|url|website)\s*:\s*$/i);
+    cuts.push(lead ? link.index - lead[0].length : link.index);
+  } else {
+    const lead = held.match(/(?:(?:use|visit|see|open)\s+)?(?:this|the)\s+(?:link|url|website)\s*:\s*$/i);
+    if (lead?.index != null) cuts.push(lead.index);
+  }
+  if (!cuts.length) return held.length;
+  return Math.min(...cuts);
+}
+function createReplyStream(allowed, standIn, rules, cues, order) {
   let held = "";
+  let visible = "";
+  const found = /* @__PURE__ */ new Set();
+  const release = (ready) => {
+    if (!ready) return "";
+    const cleaned = replaceLinks(scrubPrices(ready, allowed, standIn), rules, found);
+    visible += cleaned;
+    return cleaned;
+  };
   const push = (chunk) => {
     held += chunk;
-    const partial = held.match(/(?:£|\$|€|gbp\s?)\d[\d,]*(?:\.\d*)?$/i) ?? held.match(/(?:£|\$|€)$/) ?? held.match(/\d[\d,]{0,8}$/);
-    const cut = partial?.index ?? held.length;
+    const cut = holdFrom(held);
     const ready = held.slice(0, cut);
     held = held.slice(cut);
-    return scrubPrices(ready, allowed, standIn);
+    return release(ready);
   };
   const flush = () => {
-    const rest = scrubPrices(held, allowed, standIn);
+    let tail = release(held);
     held = "";
-    return rest;
+    const dropped = tail.replace(
+      /(?:(?:use|visit|see|open)\s+)?(?:this|the)\s+(?:link|url|website)\s*:\s*$/i,
+      ""
+    );
+    if (dropped !== tail) {
+      visible = visible.slice(0, visible.length - tail.length) + dropped;
+      tail = dropped;
+    }
+    for (const id of inferActions(visible, cues, order, order.length)) found.add(id);
+    const picked = order.filter((id) => found.has(id)).slice(0, 3);
+    return picked.length ? `${tail}
+${ACTION_MARK}${picked.join(",")}` : tail;
   };
   return { push, flush };
 }
@@ -438,6 +629,11 @@ function publicWidget(config) {
     phoneHref: config.links.phoneHref,
     phone: config.links.phone,
     whatsappHref: config.links.whatsapp,
+    actions: config.actions.slice(0, 6).map((action) => ({
+      id: action.id,
+      label: action.label,
+      href: action.href
+    })),
     nudge: {
       ...config.nudge,
       replies: config.nudge.replies.slice(0, 3)
@@ -507,7 +703,8 @@ async function POST(request) {
     return json({
       ok: true,
       notified: saved.notified,
-      message: fill(template, parsed.lead.name)
+      message: fill(template, parsed.lead.name),
+      actions: ["phone", "whatsapp"]
     });
   }
   const messages = normaliseMessages(body.messages, business.limits);
@@ -551,7 +748,13 @@ async function POST(request) {
       console.error("chat model error", error instanceof Error ? error.name : "error");
     }
   });
-  const guard = createPriceStream(business.allowedPrices, business.priceStandIn);
+  const guard = createReplyStream(
+    business.allowedPrices,
+    business.priceStandIn,
+    business.replyLinks,
+    business.actionCues,
+    business.actions.map((action) => action.id)
+  );
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
