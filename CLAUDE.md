@@ -9,3 +9,5 @@ Do not invent reviews, ratings, years in business, accreditations, guarantees, i
 Brand: D & P Roofing and Building. Canvas #0A0F16, surface #141B25, ink #EEF2F6, accent #DE213A, blue #0354B4. Display font Archivo, text font Geist.
 
 The chatbot is edited in `lib/business.ts`. Replies name pages in words. The widget adds the button. A reply must not contain a raw URL or a path.
+
+The Which? review count and rating live in `lib/which.json`. Change it there, nowhere else. The build fills them into every page and stops if the number is missing, 0 or not a whole number.
