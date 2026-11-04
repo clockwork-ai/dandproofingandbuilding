@@ -129,6 +129,10 @@ p{text-wrap:pretty}
 .foot a{color:#DCE4EE;text-decoration:none}
 .foot a:hover{color:#fff;text-decoration:underline}
 .foot p{margin:0 0 6px}
+.foot .credit{display:block;margin-top:26px;font-size:12px}
+.foot .credit p{margin:0;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+.foot .credit a{color:#8C99AA}
+.foot .credit a:hover{color:#fff}
 @media (max-width:760px){.foot .wrap{grid-template-columns:1fr}.foot{padding-bottom:110px}}
 .callbar{position:fixed;left:0;right:0;bottom:0;z-index:62;display:none;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(8,12,18,.92)}
 .callbar .btn{flex:1}
