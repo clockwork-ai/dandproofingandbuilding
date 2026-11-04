@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Photo frame · D & P Roofing and Building</title>
+<link rel="icon" href="/brand_assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Geist:wght@400;500;600&display=swap">
+<style>
+/* A private tool for D & P: frame job photos with the logo, the Which? rating and the phone number.
+   Everything happens on the phone. Photos are never uploaded anywhere. */
+:root{--canvas:#0A0F16;--surface:#141B25;--ink:#EEF2F6;--soft:#9AA7B6;--accent:#DE213A;--blue:#0354B4;--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--ink);font:16px/1.5 Geist,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:640px;margin:0 auto;padding:20px 16px calc(40px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+header img{height:34px;background:#fff;border-radius:8px;padding:5px 8px}
+h1{font:800 26px/1.1 Archivo,sans-serif;margin:0 0 6px}
+p{margin:0 0 12px;color:var(--soft)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+.lbl{font-weight:600;color:var(--ink);margin-bottom:8px;display:block}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg label{display:block;text-align:center;padding:10px 6px;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-size:14px;color:var(--soft)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg input:checked+span{color:#fff}
+.seg label:has(input:checked){border-color:var(--accent);background:rgba(222,33,58,.12);color:#fff}
+.seg small{display:block;font-size:12px;opacity:.75}
+input[type=text]{width:100%;font:inherit;color:var(--ink);background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:12px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.tick{display:flex;gap:10px;align-items:flex-start;color:var(--ink);font-size:15px;margin:8px 0}
+.tick input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin-top:1px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border:0;border-radius:12px;font:600 17px Geist,sans-serif;cursor:pointer;color:#fff;background:var(--accent)}
+.btn.o{background:transparent;border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.pick{position:relative}
+.pick input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.prev{display:grid;gap:12px;margin-top:14px}
+.prev figure{margin:0;position:relative}
+.prev img{width:100%;display:block;border-radius:12px;background:#000}
+.prev figcaption{display:flex;gap:8px;align-items:center;margin-top:8px}
+.prev figcaption input{flex:1}
+.mini{font-size:13px;color:var(--soft)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.note{font-size:13px;color:var(--soft);margin-top:14px}
+</style>
+</head>
+<body>
+<main>
+  <header><img src="/brand_assets/logo-dandp-crop.png" alt="D & P Roofing and Building Ltd"></header>
+  <h1>Frame your job photos</h1>
+  <p>Pick photos from the job. Each one gets the D&nbsp;&amp;&nbsp;P logo, the Which? rating and the phone number, ready to post or send.</p>
+
+  <div class="card">
+    <span class="lbl">1. Size</span>
+    <div class="seg" role="radiogroup" aria-label="Size">
+      <label><input type="radio" name="fmt" value="1080x1350" checked><span>Post<small>Facebook, Instagram</small></span></label>
+      <label><input type="radio" name="fmt" value="1080x1080"><span>Square<small>Google, WhatsApp</small></span></label>
+      <label><input type="radio" name="fmt" value="1080x1920"><span>Story<small>Full screen</small></span></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <label class="lbl" for="cap">2. What's the job? (optional)</label>
+    <input type="text" id="cap" maxlength="40" placeholder="Full re-roof, Bolton" autocomplete="off">
+    <p class="mini" style="margin-top:6px">Town or area only. Never a house number or street.</p>
+    <label class="tick"><input type="checkbox" id="phone" checked> Show the phone number</label>
+  </div>
+
+  <div class="card">
+    <span class="lbl">3. Photos</span>
+    <div class="pick btn o"><span>Choose photos</span><input type="file" id="files" accept="image/*" multiple aria-label="Choose photos"></div>
+    <div class="prev" id="prev"></div>
+  </div>
+
+  <div class="card">
+    <label class="tick"><input type="checkbox" id="checked"> I've checked these photos: no house numbers, car number plates or people's faces.</label>
+    <div class="row2">
+      <button class="btn" id="share" disabled>Share</button>
+      <button class="btn o" id="save" disabled>Save</button>
+    </div>
+    <p class="note">Photos stay on this phone. Nothing is uploaded. The location data from the camera is removed from the framed copy.</p>
+  </div>
+</main>
+
+<script>
+(() => {
+  // Filled in by the site build from lib/which.json, so the rating is always the current one.
+  const WHICH = { rating: "{{WHICH_RATING}}", count: "{{WHICH_COUNT}}" };
+  const PHONE = "07587 415299";
+  const SITE = "dandproofingandbuilding.co.uk";
+
+  const $ = (id) => document.getElementById(id);
+  const load = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+  const assets = Promise.all([load("/brand_assets/logo-dandp-crop.png"), load("/brand_assets/badge-which.png")]);
+  const fonts = Promise.all([
+    document.fonts.load('800 60px "Archivo"'), document.fonts.load('700 40px "Archivo"'),
+    document.fonts.load('600 30px "Geist"'), document.fonts.load('500 30px "Geist"'),
+  ]).catch(() => {});
+
+  // Each photo: its decoded image, its framing slider (0 to 100) and the last framed result.
+  let photos = [];
+
+  const fmt = () => document.querySelector('input[name=fmt]:checked').value.split("x").map(Number);
+
+  async function decode(file) {
+    try { return await createImageBitmap(file, { imageOrientation: "from-image" }); }
+    catch { const url = URL.createObjectURL(file); try { return await load(url); } finally { setTimeout(() => URL.revokeObjectURL(url), 5000); } }
+  }
+
+  function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  function star(ctx, cx, cy, r) {
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r * 0.45 : r; ctx.lineTo(cx + rad * Math.cos(a), cy + rad * Math.sin(a)); }
+    ctx.closePath(); ctx.fill();
+  }
+
+  async function frame(p) {
+    const [W, H] = fmt();
+    const [logo, badge] = await assets; await fonts;
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const ctx = c.getContext("2d");
+    // Photo, cropped to fill. The slider moves the crop along whichever side is cut.
+    const s = Math.max(W / p.img.width, H / p.img.height), dw = p.img.width * s, dh = p.img.height * s, f = p.pos / 100;
+    ctx.drawImage(p.img, (W - dw) * (dw > W ? f : 0.5), (H - dh) * (dh > H ? f : 0.5), dw, dh);
+
+    const M = 44, phone = $("phone").checked, cap = $("cap").value.trim();
+    // Stories put a reply bar over the bottom of the picture, so lift everything clear of it.
+    const safe = H > 1500 ? 200 : 0;
+    // Dark fade at the bottom so the white cards and text always read, whatever the photo.
+    const fadeH = Math.round(H * (H > 1500 ? 0.42 : 0.42));
+    const g = ctx.createLinearGradient(0, H - fadeH, 0, H);
+    g.addColorStop(0, "rgba(10,15,22,0)"); g.addColorStop(0.55, "rgba(10,15,22,.62)"); g.addColorStop(1, "rgba(10,15,22,.92)");
+    ctx.fillStyle = g; ctx.fillRect(0, H - fadeH, W, fadeH);
+
+    // Bottom strip: red rule, phone and website.
+    let base = H - M - safe;
+    if (phone) {
+      ctx.fillStyle = "#DE213A"; ctx.fillRect(M, base - 58, 64, 6);
+      ctx.fillStyle = "#fff"; ctx.font = '600 34px "Geist", sans-serif'; ctx.textBaseline = "alphabetic";
+      ctx.fillText(PHONE, M, base - 4);
+      ctx.fillStyle = "rgba(238,242,246,.8)"; ctx.font = '500 26px "Geist", sans-serif';
+      const t = SITE; ctx.fillText(t, W - M - ctx.measureText(t).width, base - 6);
+      base -= 84;
+    }
+
+    // Two white cards side by side: the D & P logo, and the Which? badge with the rating.
+    const cardH = 120, gap = 16, logoW = Math.round((W - 2 * M - gap) * 0.52), whichW = W - 2 * M - gap - logoW, top = base - cardH;
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,.35)"; ctx.shadowBlur = 24; ctx.shadowOffsetY = 6;
+    ctx.fillStyle = "#fff"; rr(ctx, M, top, logoW, cardH, 18); ctx.fill(); rr(ctx, M + logoW + gap, top, whichW, cardH, 18); ctx.fill(); ctx.restore();
+    const lw = logoW - 40, lh = lw * logo.height / logo.width;
+    const lh2 = Math.min(lh, cardH - 36), lw2 = lh2 * logo.width / logo.height;
+    ctx.drawImage(logo, M + (logoW - lw2) / 2, top + (cardH - lh2) / 2, lw2, lh2);
+    const bx = M + logoW + gap, bh = cardH - 28, bw = bh * badge.width / badge.height;
+    ctx.drawImage(badge, bx + 14, top + 14, bw, bh);
+    const tx = bx + 14 + bw + 14;
+    ctx.fillStyle = "#DE213A"; for (let i = 0; i < 5; i++) star(ctx, tx + 13 + i * 30, top + 36, 13);
+    ctx.fillStyle = "#0A0F16"; ctx.font = '800 40px "Archivo", sans-serif'; ctx.fillText(WHICH.rating, tx, top + 88);
+    const rw = ctx.measureText(WHICH.rating).width;
+    ctx.fillStyle = "#4A5563"; ctx.font = '500 22px "Geist", sans-serif'; ctx.fillText(`${WHICH.count} reviews`, tx + rw + 10, top + 86);
+
+    // Optional job line above the cards.
+    if (cap) {
+      ctx.fillStyle = "#fff"; ctx.font = '800 54px "Archivo", sans-serif';
+      ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 16;
+      let size = 54; while (ctx.measureText(cap).width > W - 2 * M && size > 30) { size -= 2; ctx.font = `800 ${size}px "Archivo", sans-serif`; }
+      ctx.fillText(cap, M, top - 26); ctx.shadowBlur = 0;
+    }
+    return c;
+  }
+
+  const toBlob = (c) => new Promise((ok) => c.toBlob(ok, "image/jpeg", 0.9));
+  const name = (i) => `dandp-${new Date().toISOString().slice(0, 10)}-${i + 1}.jpg`;
+
+  async function render() {
+    const box = $("prev");
+    for (const [i, p] of photos.entries()) {
+      const c = await frame(p);
+      p.blob = await toBlob(c);
+      if (p.url) URL.revokeObjectURL(p.url);
+      p.url = URL.createObjectURL(p.blob);
+      let fig = box.children[i];
+      if (!fig) {
+        fig = document.createElement("figure");
+        fig.innerHTML = '<img alt=""><figcaption><span class="mini">Move photo</span><input type="range" min="0" max="100"></figcaption>';
+        const r = fig.querySelector("input"); r.value = p.pos;
+        r.addEventListener("change", () => { p.pos = Number(r.value); render(); });
+        box.appendChild(fig);
+      }
+      fig.querySelector("img").src = p.url;
+      fig.querySelector("img").alt = `Framed photo ${i + 1}`;
+    }
+    while (box.children.length > photos.length) box.lastChild.remove();
+    update();
+  }
+
+  function update() {
+    const ready = photos.length > 0 && $("checked").checked;
+    $("share").disabled = !ready; $("save").disabled = !ready;
+  }
+
+  $("files").addEventListener("change", async (e) => {
+    const files = [...e.target.files].slice(0, 10);
+    photos = [];
+    for (const f of files) { try { photos.push({ img: await decode(f), pos: 50 }); } catch { /* skip a file the phone can't open */ } }
+    $("checked").checked = false;
+    render();
+  });
+  document.querySelectorAll('input[name=fmt]').forEach((r) => r.addEventListener("change", render));
+  $("phone").addEventListener("change", render);
+  let t; $("cap").addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 350); });
+  $("checked").addEventListener("change", update);
+
+  $("save").addEventListener("click", () => {
+    photos.forEach((p, i) => { const a = document.createElement("a"); a.href = p.url; a.download = name(i); document.body.appendChild(a); a.click(); a.remove(); });
+  });
+  $("share").addEventListener("click", async () => {
+    const files = photos.map((p, i) => new File([p.blob], name(i), { type: "image/jpeg" }));
+    if (navigator.canShare && navigator.canShare({ files })) {
+      try { await navigator.share({ files }); } catch { /* closed the share sheet */ }
+    } else {
+      $("save").click();
+    }
+  });
+})();
+</script>
+</body>
+</html>
