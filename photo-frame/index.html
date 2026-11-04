@@ -111,6 +111,25 @@ textarea{width:100%;min-height:310px;font:15px/1.5 Geist,system-ui,sans-serif;co
   const SITE = "dandproofingandbuilding.co.uk";
   const WHICH_URL = "https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/";
 
+  // Google rating and count. OFF: the frame and both captions stay on the Which? figures.
+  // Turn on only with Callum's yes, and put the summary address in then. Rating and count only,
+  // never review text, and never a picture of a review.
+  const GOOGLE_RATING_ON = false;
+  const REVIEWS_SUMMARY_URL = "";
+  let GOOGLE = null;
+  if (GOOGLE_RATING_ON && /^https:\/\//.test(REVIEWS_SUMMARY_URL)) {
+    fetch(REVIEWS_SUMMARY_URL, { credentials: "omit" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && typeof d.rating === "number" && Number.isFinite(d.userRatingCount)) {
+          GOOGLE = { rating: d.rating.toFixed(1), count: String(d.userRatingCount) };
+          if (typeof fillCaption === "function") fillCaption();
+        }
+      })
+      .catch(() => {});
+  }
+  const googleLine = () => (GOOGLE ? `Rated ${GOOGLE.rating} from ${GOOGLE.count} reviews on Google.` : "");
+
   // Two captions, built from the job line until Dale types in one himself.
   // Facebook and WhatsApp make links tappable. Instagram and TikTok don't, so that one points to the bio.
   const NOTES = {
@@ -127,20 +146,22 @@ textarea{width:100%;min-height:310px;font:15px/1.5 Geist,system-ui,sans-serif;co
         lead,
         "",
         `Rated ${WHICH.rating} from ${WHICH.count} reviews on Which? Trusted Trader.`,
+        googleLine(),
         `Free, no-obligation quotes. Call ${PHONE} or tap the link in our bio.`,
         "",
         ["#roofing", "#roofer", town && `#${town}`].filter(Boolean).join(" "),
-      ].join("\n");
+      ].filter((l, i) => !(i === 3 && l === "")).join("\n");
     }
     return [
       lead,
       "",
       `Rated ${WHICH.rating} from ${WHICH.count} reviews on Which? Trusted Trader. Read them here:`,
       WHICH_URL,
+      googleLine(),
       "",
       `Free, no-obligation quotes. Call ${PHONE}`,
       `https://${SITE}`,
-    ].join("\n");
+    ].filter((l, i) => !(i === 4 && l === "")).join("\n");
   }
   // Dale's own edits are kept per platform, so switching back and forth never loses them.
   const edited = { fb: null, ig: null };
