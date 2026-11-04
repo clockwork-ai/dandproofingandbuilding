@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /photo-frame/
 
 Sitemap: https://dandproofingandbuilding.co.uk/sitemap.xml
