@@ -402,6 +402,11 @@ a.big:hover{opacity:.85}
 
 /* ---------- 6 practical: light ground ---------- */
 .light{background:var(--stone);color:var(--ink-dark);--sc-ink:var(--ink-dark);--sc-ink-soft:var(--ink-dark-soft)}
+/* ---------- Which? review widget (code supplied by Which?) ---------- */
+.wwidget{margin-top:var(--sc-5);background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 10px 30px rgba(10,15,22,.08)}
+/* Heights measured from the widget itself (about 916px stacked, 532px side by side). Which?'s suggested 810 and 435 cut off its "Read all reviews" button. */
+iframe#which-trusted-traders-review-widget{display:block;border:0;width:100%;min-height:930px}
+@media screen and (min-width:900px){iframe#which-trusted-traders-review-widget{min-height:545px}}
 .light .sc-section{padding:var(--sc-10) 0}
 .light h2{font-family:var(--sc-font-display);font-weight:800;font-stretch:112%;letter-spacing:-.025em;font-size:clamp(2rem,4vw,3.4rem);line-height:1;margin:0;color:var(--ink-dark)}
 .light .lede{color:var(--ink-dark-soft);max-width:56ch;margin-top:var(--sc-4);font-size:17px}
@@ -764,7 +769,18 @@ a.big:hover{opacity:.85}
 
 <!-- 6 · PRACTICAL: flow on the dry, light ground -->
 <div class="light">
-  <section class="sc-section" id="services">
+  <section class="sc-section" id="which-reviews">
+    <div class="sc-wrap">
+      <div data-sc-in>
+        <h2>Latest reviews, live from Which?</h2>
+        <p class="lede">This comes straight from Which? Trusted Trader, so new reviews show here as soon as Which? publishes them.</p>
+      </div>
+      <div class="wwidget" data-sc-in>
+        <iframe id="which-trusted-traders-review-widget" title="D &amp; P Roofing and Building reviews on Which? Trusted Trader" loading="lazy" src="https://trustedtraders.which.co.uk/widgets/businesses/d-p-roofing-building-ltd/reviews"></iframe>
+      </div>
+    </div>
+  </section>
+  <section class="sc-section" id="services" style="padding-top:0">
     <div class="sc-wrap svc">
       <div data-sc-in>
         <h2>Roofing first. Building and groundworks too.</h2>
