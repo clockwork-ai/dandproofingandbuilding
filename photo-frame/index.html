@@ -45,13 +45,18 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .mini{font-size:13px;color:var(--soft)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .note{font-size:13px;color:var(--soft);margin-top:14px}
+textarea{width:100%;min-height:310px;font:15px/1.5 Geist,system-ui,sans-serif;color:var(--ink);background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:12px;resize:vertical}
+.capbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.link{background:none;border:0;color:var(--soft);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:4px 0}
+.toast{position:fixed;left:50%;width:max-content;max-width:calc(100% - 32px);text-align:center;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#fff;color:#0A0F16;font-weight:600;padding:12px 18px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
 </style>
 </head>
 <body>
 <main>
   <header><img src="/brand_assets/logo-dandp-crop.png" alt="D & P Roofing and Building Ltd"></header>
   <h1>Frame your job photos</h1>
-  <p>Pick photos from the job. Each one gets the D&nbsp;&amp;&nbsp;P logo, the Which? rating and the phone number, ready to post or send.</p>
+  <p>Pick photos from the job. Each one gets the D&nbsp;&amp;&nbsp;P logo, the Which? rating and the phone number, and you get a caption with your links, ready to paste.</p>
 
   <div class="card">
     <span class="lbl">1. Size</span>
@@ -81,9 +86,18 @@ input[type=range]{width:100%;accent-color:var(--accent)}
       <button class="btn" id="share" disabled>Share</button>
       <button class="btn o" id="save" disabled>Save</button>
     </div>
-    <p class="note">Photos stay on this phone. Nothing is uploaded. The location data from the camera is removed from the framed copy.</p>
+    <p class="note">Share copies the caption too, so when the post opens just press and hold, then Paste. Photos stay on this phone. Nothing is uploaded. The location data from the camera is removed from the framed copy.</p>
+  </div>
+
+  <div class="card">
+    <div class="capbar"><label class="lbl" for="caption" style="margin:0">4. Caption</label><button class="link" id="reset" hidden>Start again from the job</button></div>
+    <textarea id="caption" spellcheck="true"></textarea>
+    <p class="mini" style="margin-top:6px">Filled in from the job above, with the website, Which? reviews and phone number. Change anything you like before copying.</p>
+    <button class="btn" id="copy">Copy caption</button>
+    <p class="note">Facebook and WhatsApp make the links tappable. Instagram doesn't allow links in posts, so people will see the phone number and the website name there.</p>
   </div>
 </main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (() => {
@@ -91,6 +105,35 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   const WHICH = { rating: "{{WHICH_RATING}}", count: "{{WHICH_COUNT}}" };
   const PHONE = "07587 415299";
   const SITE = "dandproofingandbuilding.co.uk";
+  const WHICH_URL = "https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/";
+
+  // The caption is built from the job line until Dale types in it himself.
+  function captionFor(job) {
+    const lead = job ? `${job.replace(/[.!\s]+$/, "")}, finished by the D & P team.` : "Another job finished by the D & P team.";
+    return [
+      lead,
+      "",
+      `Rated ${WHICH.rating} from ${WHICH.count} reviews on Which? Trusted Trader. Read them here:`,
+      WHICH_URL,
+      "",
+      `Free, no-obligation quotes. Call ${PHONE}`,
+      `https://${SITE}`,
+    ].join("\n");
+  }
+  let captionEdited = false;
+  function fillCaption() { if (!captionEdited) $("caption").value = captionFor($("cap").value.trim()); }
+
+  let toastT;
+  function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+  async function copyCaption() {
+    const text = $("caption").value;
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch {
+      // Older phones: select the box and use the old copy command.
+      const ta = $("caption"); ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+      try { return document.execCommand("copy"); } catch { return false; } finally { ta.blur(); }
+    }
+  }
 
   const $ = (id) => document.getElementById(id);
   const load = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
@@ -210,7 +253,11 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   });
   document.querySelectorAll('input[name=fmt]').forEach((r) => r.addEventListener("change", render));
   $("phone").addEventListener("change", render);
-  let t; $("cap").addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 350); });
+  let t; $("cap").addEventListener("input", () => { fillCaption(); clearTimeout(t); t = setTimeout(render, 350); });
+  $("caption").addEventListener("input", () => { captionEdited = true; $("reset").hidden = false; });
+  $("reset").addEventListener("click", () => { captionEdited = false; $("reset").hidden = true; fillCaption(); });
+  $("copy").addEventListener("click", async () => { toast((await copyCaption()) ? "Caption copied. Paste it into your post." : "Press and hold the caption, then Copy."); });
+  fillCaption();
   $("checked").addEventListener("change", update);
 
   $("save").addEventListener("click", () => {
@@ -218,8 +265,13 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   });
   $("share").addEventListener("click", async () => {
     const files = photos.map((p, i) => new File([p.blob], name(i), { type: "image/jpeg" }));
+    // Copy the caption first: Facebook and Instagram ignore text sent with photos, so Dale pastes it.
+    // Not awaited before sharing: Safari only opens the share sheet straight from the tap.
+    copyCaption().then((ok) => { if (ok) toast("Caption copied. Paste it into your post."); });
+    const text = $("caption").value;
+    const data = navigator.canShare && navigator.canShare({ files, text }) ? { files, text } : { files };
     if (navigator.canShare && navigator.canShare({ files })) {
-      try { await navigator.share({ files }); } catch { /* closed the share sheet */ }
+      try { await navigator.share(data); } catch { /* closed the share sheet */ }
     } else {
       $("save").click();
     }
