@@ -23,6 +23,7 @@ p{margin:0 0 12px;color:var(--soft)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
 .lbl{font-weight:600;color:var(--ink);margin-bottom:8px;display:block}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg.two{grid-template-columns:1fr 1fr;margin-bottom:10px}
 .seg label{display:block;text-align:center;padding:10px 6px;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-size:14px;color:var(--soft)}
 .seg input{position:absolute;opacity:0;pointer-events:none}
 .seg input:checked+span{color:#fff}
@@ -81,21 +82,24 @@ textarea{width:100%;min-height:310px;font:15px/1.5 Geist,system-ui,sans-serif;co
   </div>
 
   <div class="card">
+    <div class="capbar"><label class="lbl" for="caption" style="margin:0">4. Caption</label><button class="link" id="reset" hidden>Start again from the job</button></div>
+    <div class="seg two" role="radiogroup" aria-label="Where are you posting?">
+      <label><input type="radio" name="plat" value="fb" checked><span>Facebook<small>and WhatsApp</small></span></label>
+      <label><input type="radio" name="plat" value="ig"><span>Instagram<small>and TikTok</small></span></label>
+    </div>
+    <textarea id="caption" spellcheck="true"></textarea>
+    <p class="mini" style="margin-top:6px" id="capnote"></p>
+    <button class="btn" id="copy">Copy caption</button>
+  </div>
+  <div class="card">
     <label class="tick"><input type="checkbox" id="checked"> I've checked these photos: no house numbers, car number plates or people's faces.</label>
     <div class="row2">
       <button class="btn" id="share" disabled>Share</button>
       <button class="btn o" id="save" disabled>Save</button>
     </div>
-    <p class="note">Share copies the caption too, so when the post opens just press and hold, then Paste. Photos stay on this phone. Nothing is uploaded. The location data from the camera is removed from the framed copy.</p>
+    <p class="note">Share copies the caption you picked above, so when the post opens just press and hold, then Paste. Photos stay on this phone. Nothing is uploaded. The location data from the camera is removed from the framed copy.</p>
   </div>
 
-  <div class="card">
-    <div class="capbar"><label class="lbl" for="caption" style="margin:0">4. Caption</label><button class="link" id="reset" hidden>Start again from the job</button></div>
-    <textarea id="caption" spellcheck="true"></textarea>
-    <p class="mini" style="margin-top:6px">Filled in from the job above, with the website, Which? reviews and phone number. Change anything you like before copying.</p>
-    <button class="btn" id="copy">Copy caption</button>
-    <p class="note">Facebook and WhatsApp make the links tappable. Instagram doesn't allow links in posts, so people will see the phone number and the website name there.</p>
-  </div>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -107,9 +111,27 @@ textarea{width:100%;min-height:310px;font:15px/1.5 Geist,system-ui,sans-serif;co
   const SITE = "dandproofingandbuilding.co.uk";
   const WHICH_URL = "https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/";
 
-  // The caption is built from the job line until Dale types in it himself.
-  function captionFor(job) {
-    const lead = job ? `${job.replace(/[.!\s]+$/, "")}, finished by the D & P team.` : "Another job finished by the D & P team.";
+  // Two captions, built from the job line until Dale types in one himself.
+  // Facebook and WhatsApp make links tappable. Instagram and TikTok don't, so that one points to the bio.
+  const NOTES = {
+    fb: "With the Which? reviews link, the phone number and the website. Change anything you like before copying.",
+    ig: "No links, because Instagram and TikTok don't let people tap them in a post. It points to the link in your bio instead, so make sure your bio has the website in it.",
+  };
+  const plat = () => document.querySelector('input[name=plat]:checked').value;
+  function captionFor(job, which) {
+    const j = job.replace(/[.!\s]+$/, "");
+    const lead = j ? `${j}, finished by the D & P team.` : "Another job finished by the D & P team.";
+    if (which === "ig") {
+      const town = j.includes(",") ? j.split(",").pop().replace(/[^A-Za-z0-9]/g, "") : "";
+      return [
+        lead,
+        "",
+        `Rated ${WHICH.rating} from ${WHICH.count} reviews on Which? Trusted Trader.`,
+        `Free, no-obligation quotes. Call ${PHONE} or tap the link in our bio.`,
+        "",
+        ["#roofing", "#roofer", town && `#${town}`].filter(Boolean).join(" "),
+      ].join("\n");
+    }
     return [
       lead,
       "",
@@ -120,8 +142,14 @@ textarea{width:100%;min-height:310px;font:15px/1.5 Geist,system-ui,sans-serif;co
       `https://${SITE}`,
     ].join("\n");
   }
-  let captionEdited = false;
-  function fillCaption() { if (!captionEdited) $("caption").value = captionFor($("cap").value.trim()); }
+  // Dale's own edits are kept per platform, so switching back and forth never loses them.
+  const edited = { fb: null, ig: null };
+  function fillCaption() {
+    const w = plat();
+    $("caption").value = edited[w] ?? captionFor($("cap").value.trim(), w);
+    $("reset").hidden = edited[w] === null;
+    $("capnote").textContent = NOTES[w];
+  }
 
   let toastT;
   function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
@@ -254,8 +282,9 @@ textarea{width:100%;min-height:310px;font:15px/1.5 Geist,system-ui,sans-serif;co
   document.querySelectorAll('input[name=fmt]').forEach((r) => r.addEventListener("change", render));
   $("phone").addEventListener("change", render);
   let t; $("cap").addEventListener("input", () => { fillCaption(); clearTimeout(t); t = setTimeout(render, 350); });
-  $("caption").addEventListener("input", () => { captionEdited = true; $("reset").hidden = false; });
-  $("reset").addEventListener("click", () => { captionEdited = false; $("reset").hidden = true; fillCaption(); });
+  $("caption").addEventListener("input", () => { edited[plat()] = $("caption").value; $("reset").hidden = false; });
+  $("reset").addEventListener("click", () => { edited[plat()] = null; fillCaption(); });
+  document.querySelectorAll('input[name=plat]').forEach((r) => r.addEventListener("change", fillCaption));
   $("copy").addEventListener("click", async () => { toast((await copyCaption()) ? "Caption copied. Paste it into your post." : "Press and hold the caption, then Copy."); });
   fillCaption();
   $("checked").addEventListener("change", update);
