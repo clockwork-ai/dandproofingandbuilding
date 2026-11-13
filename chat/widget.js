@@ -38,7 +38,7 @@
       </form>
       <nav class="cw-links" aria-label="Next steps">
         <a class="cw-quote" href="/contact-us/">Get a free quote</a>
-        <a class="cw-phone" href="tel:+447587415299">07587 415299</a>
+        <a class="cw-phone" href="tel:+441942802880">01942 802880</a>
         <a class="cw-wa" href="https://wa.me/447587415299" target="_blank" rel="noopener">WhatsApp</a>
       </nav>
     </section>
@@ -95,12 +95,12 @@
     auditLabel: "Get a free quote",
     bookHref: "https://wa.me/447587415299",
     bookLabel: "WhatsApp",
-    phoneHref: "tel:+447587415299",
-    phone: "07587 415299",
+    phoneHref: "tel:+441942802880",
+    phone: "01942 802880",
     whatsappHref: "https://wa.me/447587415299",
     actions: [
       { id: "quote", label: "Get a quote", href: "/contact-us/" },
-      { id: "phone", label: "Call Dale", href: "tel:+447587415299" },
+      { id: "phone", label: "Call Dale", href: "tel:+441942802880" },
       { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/447587415299" },
       { id: "areas", label: "Areas we cover", href: "/locations/" },
       { id: "gallery", label: "See the gallery", href: "/gallery/" },
@@ -216,8 +216,8 @@
     form.querySelector("button").textContent = next.formSubmit || "Save for Dale";
     quote.href = safeHref(next.auditHref, "/contact-us/");
     quote.textContent = next.auditLabel || "Get a free quote";
-    phone.href = safeHref(next.phoneHref, "tel:+447587415299");
-    phone.textContent = next.phone || "07587 415299";
+    phone.href = safeHref(next.phoneHref, "tel:+441942802880");
+    phone.textContent = next.phone || "01942 802880";
     whatsapp.href = safeHref(next.whatsappHref || next.bookHref, "https://wa.me/447587415299");
     whatsapp.textContent = next.bookLabel || "WhatsApp";
     if (next.nudge && next.nudge.text) nudgeOpen.textContent = next.nudge.text;
@@ -411,7 +411,7 @@
       if (wantsDetails(bubble.textContent)) openForm();
     } catch {
       bubble.className = "cw-msg cw-msg--note";
-      bubble.textContent = "Sorry, the chat didn't connect. You can still ring 07587 415299 or use the quote link below.";
+      bubble.textContent = "Sorry, the chat didn't connect. You can still ring 01942 802880 or use the quote link below.";
       messages.pop();
     } finally {
       busy = false;
@@ -474,7 +474,7 @@
         formToggle.setAttribute("aria-expanded", "false");
       }
     } catch {
-      add("note", "Sorry, that didn't send. Ring 07587 415299 or WhatsApp D & P.");
+      add("note", "Sorry, that didn't send. Ring 01942 802880 or WhatsApp D & P.");
     } finally {
       button.disabled = false;
     }
