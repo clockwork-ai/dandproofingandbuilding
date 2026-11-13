@@ -144,7 +144,7 @@ export const business: BusinessConfig = {
     "Never use an em dash or an en dash. Use a full stop, a comma, a colon, or the word to for a range.",
   ],
   knowledge: `
-Who. D & P Roofing and Building Ltd, based at 182 Park Road, Westhoughton, Bolton, BL5 3HB. Phone 07587 415299. Email info@dandproofingandbuilding.co.uk. WhatsApp uses the same number. Dale runs the jobs. Chrissy runs the office. Paul and the lads do the work. The person speaking here is the website assistant, not Dale. The line on the site is: "The price we quote is the price you pay." Proud sponsors of Langworth Reds. There is no company number on the site.
+Who. D & P Roofing and Building Ltd, based at 182 Park Road, Westhoughton, Bolton, BL5 3HB. Phone 01942 802880. Email info@dandproofingandbuilding.co.uk. WhatsApp is 07587 415299. Dale runs the jobs. Chrissy runs the office. Paul and the lads do the work. The person speaking here is the website assistant, not Dale. The line on the site is: "The price we quote is the price you pay." Proud sponsors of Langworth Reds. There is no company number on the site.
 
 Hours. Monday to Friday 8am to 6pm. Saturday and Sunday 10am to 4pm. A WhatsApp can be sent at any time and the site says they will get back. Emergencies: ring 07587 415299. Out of hours, WhatsApp a photo and the postcode and they will get back as soon as they can. No arrival time is published.
 
@@ -185,7 +185,7 @@ Trust, only as published. Which? Trusted Trader. Rated ${which.rating} from ${wh
 
 Work shown. The gallery and the home page show photos of their own jobs across Greater Manchester, with captions such as full re-roof, flat roof, dormer, bay roof, extension, brickwork, gutter, parapet, church roof repairs, a terrace re-roof in September 2026 and a new ridge in September 2026. Do not invent a street, a price or a story about a photo. The gallery is /gallery/. More photos are on Facebook and Instagram.
 
-Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone 07587 415299. WhatsApp https://wa.me/447587415299. Email info@dandproofingandbuilding.co.uk. Facebook https://www.facebook.com/Dandproofingandbuilding/. Instagram https://www.instagram.com/dandp_roofing_and_buildingltd/.
+Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone 01942 802880. WhatsApp https://wa.me/447587415299. Email info@dandproofingandbuilding.co.uk. Facebook https://www.facebook.com/Dandproofingandbuilding/. Instagram https://www.instagram.com/dandp_roofing_and_buildingltd/.
 `.trim(),
   allowedPrices: [],
   priceStandIn: "Dale will quote after seeing the job",
@@ -194,8 +194,8 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
     auditLabel: "Get a free quote",
     book: "https://wa.me/447587415299?text=Hi%20Dale%2C%20I%20found%20you%20online.%20I%27m%20after%20a%20quote%20for%3A%20",
     bookLabel: "WhatsApp",
-    phone: "07587 415299",
-    phoneHref: "tel:+447587415299",
+    phone: "01942 802880",
+    phoneHref: "tel:+441942802880",
     whatsapp: "https://wa.me/447587415299?text=Hi%20Dale%2C%20I%20found%20you%20online.%20I%27m%20after%20a%20quote%20for%3A%20",
     email: "info@dandproofingandbuilding.co.uk",
   },
@@ -208,16 +208,16 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
       "When someone wants a quote, a survey, a repair, or for someone to look at a job, your next reply must ask for four things: their name, their phone number, their postcode, and the job. In that same reply, ask them to WhatsApp a photo of the problem if they can. This chat cannot take picture files.",
       "When you have the name, phone, postcode and job, call saveLead before you confirm. Set photos to WhatsApp if they will send pictures, or none yet if they cannot. Do not call saveLead with blanks or guesses. Do not invent a postcode.",
       "Do not say the details were saved unless saveLead returns ok. Never say the lead was emailed or texted. This chat does not send email. If notified is true, you may say the alert hook accepted the lead. If notified is false or missing, say it is saved for Dale and has not been emailed.",
-      "After a successful save, say Dale will quote after seeing the job, and give the phone number so they can WhatsApp photos. Do not paste a link or a path.",
+      "After a successful save, say Dale will quote after seeing the job, and give 07587 415299 so they can WhatsApp photos. Do not paste a link or a path.",
       "If saveLead fails, do not say the details were saved. Give them the phone, WhatsApp and the quote page, in words only.",
       "If they are only asking a question, answer it. Do not demand their details first.",
-      "Phone: 07587 415299. Email: info@dandproofingandbuilding.co.uk. Say WhatsApp and the quote page in words. Never write the address or the path.",
+      "Phone: 01942 802880. WhatsApp: 07587 415299. Email: info@dandproofingandbuilding.co.uk. Say WhatsApp and the quote page in words. Never write the address or the path.",
     ].join(" "),
   },
   replies: {
-    rateLimit: "You've sent quite a few messages. Give it a minute, or ring 07587 415299.",
+    rateLimit: "You've sent quite a few messages. Give it a minute, or ring 01942 802880.",
     storageFail:
-      "I couldn't save that just now. Ring 07587 415299 or WhatsApp D & P, and Dale will take it from there.",
+      "I couldn't save that just now. Ring 01942 802880 or WhatsApp D & P, and Dale will take it from there.",
     saved:
       "{name}, that's saved for Dale. It has not been emailed. Ring or WhatsApp if you want to send photos.",
     savedNotified:
@@ -225,7 +225,7 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
     emptySaved:
       "Thanks. That's saved for Dale. It has not been emailed. The phone and WhatsApp links are below if you want to send photos.",
     emptyMiss: "Sorry, I missed that. Ask me about the roof, your area, or a quote.",
-    modelDown: "Sorry, I can't answer just now. Ring D & P on 07587 415299.",
+    modelDown: "Sorry, I can't answer just now. Ring D & P on 01942 802880.",
   },
   limits: {
     windowMs: 10 * 60 * 1000,
@@ -254,14 +254,14 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
   ],
   actionCues: [
     { action: "whatsapp", pattern: "\\bwhatsapp\\b" },
-    { action: "phone", pattern: "\\b(ring|call)\\b|07587\\s*415299" },
+    { action: "phone", pattern: "\\b(ring|call)\\b|07587\\s*415299|01942\\s*802880" },
     { action: "quote", pattern: "\\bquotes?\\b" },
     { action: "areas", pattern: "\\bareas page\\b" },
     { action: "gallery", pattern: "\\bthe gallery\\b" },
     { action: "survey", pattern: "\\bdrone survey\\b" },
   ],
   actions: [
-    { id: "phone", label: "Call Dale", href: "tel:+447587415299" },
+    { id: "phone", label: "Call Dale", href: "tel:+441942802880" },
     { id: "quote", label: "Get a quote", href: "/contact-us/" },
     { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/447587415299" },
     { id: "areas", label: "Areas we cover", href: "/locations/" },
