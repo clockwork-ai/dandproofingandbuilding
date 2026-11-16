@@ -25,16 +25,21 @@ await rm(publicDir, { recursive: true, force: true });
 await mkdir(path.join(root, "api"), { recursive: true });
 await mkdir(publicDir, { recursive: true });
 
-await build({
-  entryPoints: ["server/chat.ts"],
-  bundle: true,
-  platform: "node",
-  format: "esm",
-  outfile: "api/chat.js",
-  packages: "external",
-  target: "node22",
-  legalComments: "none",
-});
+async function bundle(entry, outfile) {
+  await build({
+    entryPoints: [entry],
+    bundle: true,
+    platform: "node",
+    format: "esm",
+    outfile,
+    packages: "external",
+    target: "node22",
+    legalComments: "none",
+  });
+}
+
+await bundle("server/chat.ts", "api/chat.js");
+await bundle("server/cleanup.ts", "api/cleanup-enquiries.js");
 
 const skip = new Set([
   "api",

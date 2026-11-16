@@ -497,6 +497,31 @@ function cleanLine(value, max) {
 // lib/leads.ts
 import { createHash } from "node:crypto";
 import { put } from "@vercel/blob";
+
+// lib/lead-path.ts
+var FOLDER = /^[a-z0-9][a-z0-9_-]*$/;
+var OBJECT = /^(\d{4}-\d{2}-\d{2})\/([a-f0-9]{16})\.json$/;
+function leadFolderPrefix(storagePrefix) {
+  if (!FOLDER.test(storagePrefix)) {
+    throw new Error("lead storage prefix must be one folder name");
+  }
+  return `${storagePrefix}/`;
+}
+function isLeadObjectPath(pathname2, storagePrefix) {
+  if (!FOLDER.test(storagePrefix)) return false;
+  const prefix = `${storagePrefix}/`;
+  if (!pathname2.startsWith(prefix)) return false;
+  return OBJECT.test(pathname2.slice(prefix.length));
+}
+function leadObjectPath(storagePrefix, day, hash) {
+  const pathname2 = `${leadFolderPrefix(storagePrefix)}${day}/${hash}.json`;
+  if (!isLeadObjectPath(pathname2, storagePrefix)) {
+    throw new Error("lead object path is not valid");
+  }
+  return pathname2;
+}
+
+// lib/leads.ts
 function validateLead(input, source, knownPage2) {
   const name = cleanLine(typeof input.name === "string" ? input.name : "", 80);
   const phone = cleanLine(typeof input.phone === "string" ? input.phone : "", 20);
@@ -516,7 +541,7 @@ function pathname(prefix, lead) {
   const day = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
   const hash = createHash("sha256").update(`${lead.phone.replace(/\D/g, "")}
 ${lead.job.toLowerCase()}`).digest("hex").slice(0, 16);
-  return `${prefix}/${day}/${hash}.json`;
+  return leadObjectPath(prefix, day, hash);
 }
 async function notify(config, lead) {
   const url = process.env[config.lead.webhookEnv];
