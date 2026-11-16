@@ -88,6 +88,7 @@
 
   <h2>What we collect and why</h2>
   <p>Quote forms on the home page and the contact page ask for your name, phone number, type of job, postcode, and anything you want us to know. On the contact page the job choices are roof repair, full re-roof, emergency repair, flat roof, chimney, guttering, fascias or soffits, extension, loft conversion, groundworks, patio or driveway, or something else. The home page list is the same, without emergency repair. Pressing the button does not send the form to our server. It opens WhatsApp with the message written out. Nothing is sent until you press send in WhatsApp.</p>
+  <p>The short quote pages for ads are separate. They ask for your name, phone number, postcode and what the job is, then send those details to this site. They do not take a photo. We save them as a private file on Vercel Blob, in the same way as a chat enquiry, and we send the same notification if one is switched on. We read the IP address on that request and keep a short count in the server's memory, so one visitor cannot send the form over and over. That count is not written into the saved enquiry. Those pages are not linked from the menu.</p>
   <p>The free drone survey page has its own form. It asks for your name, phone number, postcode, and what you have noticed. The choices are a check before winter, a leak or damp patch, slipped or missing tiles, chimney or flashing, a flat or bay roof, gutters, or storm damage. That form also opens WhatsApp. Nothing is sent until you press send there.</p>
   <p>Phone links open the phone on your device. The office number is 01942 802880. The emergency number is 07587 415299. This website does not record the call.</p>
   <p>WhatsApp links open a chat with 07587 415299. Some links include a short opening line. If you send a message or a photo, WhatsApp carries it to us so we can reply and quote.</p>
@@ -96,27 +97,27 @@
   <p>If you use the quote box in the chat, we ask for your name, phone number, postcode and the job. We save those, a short note on whether photos will come by WhatsApp (not the photos), the page you were on, and the time. They are stored for Dale as a private file on Vercel Blob. If the host has a notification web address switched on, the same details are also sent there over https. That address is not written in the website files, so it is not named here. The chat does not send email.</p>
   <p>The chat reads the IP address on the request and keeps a short count in the server's memory, so one visitor cannot send a very large number of messages at once. That count is not written into the saved enquiry. The chat also stores a yes or no mark in this browser tab, so the opening prompt is not shown again. It does not store your name or your message there.</p>
   <p>A private page, not linked in the menu, can frame job photos on the device. That page says the photos are not uploaded.</p>
-  <p>Each page loads Plausible Analytics so we can see which pages are used. The home page also loads a Which? Trusted Trader reviews frame.</p>
+  <p>The main pages load Plausible Analytics so we can see which pages are used. The short ad pages do not. The home page also loads a Which? Trusted Trader reviews frame.</p>
   <p>We use enquiry details to reply, arrange a look at the job, and prepare a quote. We use chat messages to answer what you asked. We use visit counts to understand the site. The site mentions discounts for NHS workers and OAPs. There is no box for that. If you tell us, we use it only for the quote. Please do not send medical information. We do not ask for it.</p>
 
   <h2>Lawful basis</h2>
   <p>When you ask for a quote, a survey or a repair, we use your details to take the steps you asked for before a contract, and to carry out a contract if you ask us to do the work.</p>
-  <p>We also rely on legitimate interests: to answer ordinary questions, to keep the site working, to limit misuse of the chat, and to see which pages are used. We do this in a way that does not override your rights. You can object. That is explained under Your rights.</p>
+  <p>We also rely on legitimate interests: to answer ordinary questions, to keep the site working, to limit misuse of the chat and the ad quote forms, and to see which pages are used. We do this in a way that does not override your rights. You can object. That is explained under Your rights.</p>
 
   <h2>Who we share data with</h2>
   <p>We share personal data only with the services this website actually uses.</p>
   <ul>
-    <li>Vercel hosts the site. The project is set to the London region. Chat enquiries are stored in Vercel Blob, which is private. Chat text goes through the Vercel AI Gateway to the model named above, so a reply can be written.</li>
-    <li>Plausible Analytics (plausible.io) receives a page request from each page so visits can be counted. Plausible's own data policy says the script sets no cookies, does not store the IP address, and keeps visitor data in the EU. The pages start that script with no extra options.</li>
-    <li>Google Fonts (fonts.googleapis.com and fonts.gstatic.com) supplies the Archivo and Geist typefaces. Your browser asks Google for those files, so Google receives the IP address and the usual browser details for that request.</li>
+    <li>Vercel hosts the site. The project is set to the London region. Chat enquiries and ad quote form enquiries are stored in Vercel Blob, which is private. Chat text goes through the Vercel AI Gateway to the model named above, so a reply can be written.</li>
+    <li>Plausible Analytics (plausible.io) receives a page request from the main pages so visits can be counted. Plausible's own data policy says the script sets no cookies, does not store the IP address, and keeps visitor data in the EU. Those pages start that script with no extra options. The short ad pages do not load it.</li>
+    <li>Google Fonts (fonts.googleapis.com and fonts.gstatic.com) supplies the Archivo and Geist typefaces on the main pages. Your browser asks Google for those files, so Google receives the IP address and the usual browser details for that request. The short ad pages use copies of the same typefaces hosted on this site, so those pages do not ask Google for the font files.</li>
     <li>Which? Trusted Traders. The home page includes a reviews frame from trustedtraders.which.co.uk. Loading the frame sends a request to Which?. We do not control that frame.</li>
     <li>WhatsApp, run by Meta, if you send a WhatsApp message, or if you press send after a form has opened WhatsApp. A phone call goes from your phone to us. The website does not pass the call on.</li>
-    <li>A notification address for chat enquiries, only if one is switched on in the host settings. It is not named in the code.</li>
+    <li>A notification address for chat enquiries and ad quote forms, only if one is switched on in the host settings. It is not named in the code.</li>
   </ul>
   <p>We do not sell personal data. There is no Meta (Facebook) pixel, no Google Analytics tag, no Google Tag Manager container, and no embedded map in the code. Facebook and Instagram appear only as links. If you follow them, you leave this site.</p>
 
   <h2>How long we keep it</h2>
-  <p>We keep enquiries for up to 12 months. Saved chat enquiries are deleted after 12 months. If an enquiry becomes a job, we keep the records for as long as we need them for that job, for our guarantees, and for legal or tax obligations.</p>
+  <p>We keep enquiries for up to 12 months. Saved chat enquiries, and enquiries from the ad quote pages, are deleted after 12 months. If an enquiry becomes a job, we keep the records for as long as we need them for that job, for our guarantees, and for legal or tax obligations.</p>
   <p>Messages you send by WhatsApp, phone or email are enquiries too. We keep them for up to 12 months, unless they become part of a job. Then we keep them as described above.</p>
   <p>We do not keep a full copy of the chat in the enquiry record. The model provider may keep what it received, under its own rules. Those rules are not set out in this website's files.</p>
   <p>Plausible says it does not store the raw IP address. This site's code does not keep its own analytics database.</p>
@@ -124,7 +125,7 @@
   <h2>Cookies</h2>
   <p>This site does not set its own cookies for accounts, advertising or analytics, and there is no cookie banner.</p>
   <p>Plausible's data policy says its script stores nothing on your device: no cookies, and nothing written to local storage. We are relying on that policy. We have not read Plausible's servers ourselves.</p>
-  <p>Google Fonts and the Which? frame are loaded from those other sites. Our code does not name a cookie for either of them. They do receive your IP address when the files or the frame load.</p>
+  <p>Google Fonts and the Which? frame are loaded from those other sites on the main pages. Our code does not name a cookie for either of them. They do receive your IP address when the files or the frame load. The short ad pages do not load either.</p>
   <p>The chat uses session storage for the one yes or no mark described above. That is not a cookie. It is cleared when you close the tab.</p>
 
   <h2>Your rights</h2>

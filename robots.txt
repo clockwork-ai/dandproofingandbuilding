@@ -2,5 +2,11 @@ User-agent: *
 Allow: /
 Disallow: /photo-frame/
 Disallow: /photo-frame
+Disallow: /quote/
+Disallow: /quote
+Disallow: /quote-bay/
+Disallow: /quote-bay
+Disallow: /emergency/
+Disallow: /emergency
 
 Sitemap: https://dandproofingandbuilding.co.uk/sitemap.xml
