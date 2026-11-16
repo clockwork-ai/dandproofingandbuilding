@@ -125,6 +125,7 @@ const pages = [
   "/free-drone-survey",
   "/gallery",
   "/locations",
+  "/privacy",
   ...towns.flatMap((town) => [`/roofers-${town}`, `/builders-${town}`]),
 ];
 
@@ -144,7 +145,7 @@ export const business: BusinessConfig = {
     "Never use an em dash or an en dash. Use a full stop, a comma, a colon, or the word to for a range.",
   ],
   knowledge: `
-Who. D & P Roofing and Building Ltd, based at 182 Park Road, Westhoughton, Bolton, BL5 3HB. Phone 01942 802880. Email info@dandproofingandbuilding.co.uk. WhatsApp is 07587 415299. Dale runs the jobs. Chrissy runs the office. Paul and the lads do the work. The person speaking here is the website assistant, not Dale. The line on the site is: "The price we quote is the price you pay." Proud sponsors of Langworth Reds. There is no company number on the site.
+Who. D & P Roofing and Building Ltd, based at 182 Park Road, Westhoughton, Bolton, BL5 3HB. Phone 01942 802880. Email info@dandproofingandbuilding.co.uk. WhatsApp is 07587 415299. Dale runs the jobs. Chrissy runs the office. Paul and the lads do the work. The person speaking here is the website assistant, not Dale. The line on the site is: "The price we quote is the price you pay." Proud sponsors of Langworth Reds. Company number 10737176, registered in England and Wales. The registered office is that address. The privacy email is dandproofingandbuilding@outlook.com.
 
 Hours. Monday to Friday 8am to 6pm. Saturday and Sunday 10am to 4pm. A WhatsApp can be sent at any time and the site says they will get back. Emergencies: ring 07587 415299. Out of hours, WhatsApp a photo and the postcode and they will get back as soon as they can. No arrival time is published.
 
@@ -184,6 +185,8 @@ Worsley is named on the home page and in the site details. It has no town page a
 Trust, only as published. Which? Trusted Trader. Rated ${which.rating} from ${which.count} reviews. Customer service, quality and value all score 5.0, and 99% of customers recommend them. Facebook: 887 followers, 100% recommend. Instagram: 731 posts, @dandp_roofing_and_buildingltd. The home page shows four of the ${which.count} Which? reviews, and says to read every one on Which?: Highly Recommended (Jul 2026), Great Service (May 2026), Great work and service (May 2026), Realistically, would be a 10 Star Review (Jun 2026). Two short lines you may repeat exactly, and not extend: "They did not increase the roofing quote." and, from Nick Wilder, "completed to a very high standard and exactly at the price we were quoted." Thirty years on roofs and buildings across Bolton and Greater Manchester. Which? page: https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/
 
 Work shown. The gallery and the home page show photos of their own jobs across Greater Manchester, with captions such as full re-roof, flat roof, dormer, bay roof, extension, brickwork, gutter, parapet, church roof repairs, a terrace re-roof in September 2026 and a new ridge in September 2026. Do not invent a street, a price or a story about a photo. The gallery is /gallery/. More photos are on Facebook and Instagram.
+
+Privacy notice. The page is /privacy/. It explains what this website does with personal data. Company number 10737176. Registered in England and Wales. Registered office: 182 Park Road, Westhoughton, Bolton, BL5 3HB. Privacy email: dandproofingandbuilding@outlook.com. Enquiries are kept for up to 12 months, and saved chat enquiries are deleted after 12 months. If an enquiry becomes a job, records are kept as needed for the job, for guarantees, and for legal or tax obligations.
 
 Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone 01942 802880. WhatsApp https://wa.me/447587415299. Email info@dandproofingandbuilding.co.uk. Facebook https://www.facebook.com/Dandproofingandbuilding/. Instagram https://www.instagram.com/dandp_roofing_and_buildingltd/.
 `.trim(),
@@ -241,6 +244,7 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
     { path: "/quote", words: "the quote page", action: "quote" },
     { path: "/#quote", words: "the quote page", action: "quote" },
     { path: "/locations", words: "the areas page", action: "areas" },
+    { path: "/privacy", words: "the privacy notice" },
     { path: "/gallery", words: "the gallery", action: "gallery" },
     { path: "/drone-roof-survey", words: "the drone survey page", action: "survey" },
     { path: "/free-drone-survey", words: "the drone survey page", action: "survey" },
