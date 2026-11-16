@@ -54,6 +54,7 @@ var pages = [
   "/free-drone-survey",
   "/gallery",
   "/locations",
+  "/privacy",
   ...towns.flatMap((town) => [`/roofers-${town}`, `/builders-${town}`])
 ];
 var business = {
@@ -112,6 +113,8 @@ Trust, only as published. Which? Trusted Trader. Rated ${which.rating} from ${wh
 
 Work shown. The gallery and the home page show photos of their own jobs across Greater Manchester, with captions such as full re-roof, flat roof, dormer, bay roof, extension, brickwork, gutter, parapet, church roof repairs, a terrace re-roof in September 2026 and a new ridge in September 2026. Do not invent a street, a price or a story about a photo. The gallery is /gallery/. More photos are on Facebook and Instagram.
 
+Privacy notice. The page is /privacy/. It explains what this website does with personal data. Do not invent a company number, a registered address or a privacy email. If someone asks and that page still shows a square bracket, say that detail is not confirmed yet and give the phone or the office email.
+
 Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone 01942 802880. WhatsApp https://wa.me/447587415299. Email info@dandproofingandbuilding.co.uk. Facebook https://www.facebook.com/Dandproofingandbuilding/. Instagram https://www.instagram.com/dandp_roofing_and_buildingltd/.
 `.trim(),
   allowedPrices: [],
@@ -164,6 +167,7 @@ Contact paths. Quote form: /contact-us/ and the home page section /#quote. Phone
     { path: "/quote", words: "the quote page", action: "quote" },
     { path: "/#quote", words: "the quote page", action: "quote" },
     { path: "/locations", words: "the areas page", action: "areas" },
+    { path: "/privacy", words: "the privacy notice" },
     { path: "/gallery", words: "the gallery", action: "gallery" },
     { path: "/drone-roof-survey", words: "the drone survey page", action: "survey" },
     { path: "/free-drone-survey", words: "the drone survey page", action: "survey" },
