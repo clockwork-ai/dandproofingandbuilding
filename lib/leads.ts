@@ -11,7 +11,7 @@ export type LeadInput = {
   job: string;
   photos: string;
   page?: string;
-  source: "chat-tool" | "chat-form";
+  source: "chat-tool" | "chat-form" | "funnel-quote";
 };
 
 export type LeadResult =

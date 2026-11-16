@@ -40,6 +40,7 @@ async function bundle(entry, outfile) {
 
 await bundle("server/chat.ts", "api/chat.js");
 await bundle("server/cleanup.ts", "api/cleanup-enquiries.js");
+await bundle("server/quote.ts", "api/quote.js");
 
 const skip = new Set([
   "api",
