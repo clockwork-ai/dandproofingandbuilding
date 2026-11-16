@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { put } from "@vercel/blob";
 import type { BusinessConfig } from "./business.ts";
 import { cleanLine, isPhone, normalisePostcode } from "./guard.ts";
+import { leadObjectPath } from "./lead-path.ts";
 
 export type LeadInput = {
   name: string;
@@ -50,7 +51,7 @@ function pathname(prefix: string, lead: LeadInput): string {
     .update(`${lead.phone.replace(/\D/g, "")}\n${lead.job.toLowerCase()}`)
     .digest("hex")
     .slice(0, 16);
-  return `${prefix}/${day}/${hash}.json`;
+  return leadObjectPath(prefix, day, hash);
 }
 
 async function notify(config: BusinessConfig, lead: LeadInput): Promise<boolean> {

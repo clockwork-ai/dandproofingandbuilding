@@ -4,9 +4,18 @@
   "buildCommand": "node scripts/build.mjs",
   "outputDirectory": "public",
   "regions": ["lhr1"],
+  "crons": [
+    {
+      "path": "/api/cleanup-enquiries",
+      "schedule": "30 3 * * *"
+    }
+  ],
   "functions": {
     "api/chat.js": {
       "maxDuration": 30
+    },
+    "api/cleanup-enquiries.js": {
+      "maxDuration": 60
     }
   }
 }
