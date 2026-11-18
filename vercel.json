@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "node scripts/build.mjs",
+  "buildCommand": "node --experimental-strip-types scripts/build.mjs",
   "outputDirectory": "public",
   "regions": ["lhr1"],
   "crons": [

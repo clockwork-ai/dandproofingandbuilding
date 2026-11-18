@@ -6,7 +6,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "node scripts/build.mjs",
+    "build": "node --experimental-strip-types scripts/build.mjs",
+    "which:check": "node --experimental-strip-types scripts/refresh-which.ts --dry-run",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test lib/*.test.ts"
   },
