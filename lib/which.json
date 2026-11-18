@@ -1,6 +1,12 @@
 {
-  "count": 143,
+  "count": 144,
   "rating": "5.0",
-  "checkedOn": "2026-11-03",
+  "recommendPercent": 99,
+  "scores": {
+    "customerService": "5.0",
+    "quality": "5.0",
+    "value": "5.0"
+  },
+  "checkedOn": "2026-11-18",
   "profileUrl": "https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/"
 }

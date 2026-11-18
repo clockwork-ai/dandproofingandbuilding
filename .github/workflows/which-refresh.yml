@@ -1,0 +1,57 @@
+name: Refresh Which? figures
+
+# Once a day, read the public Which? profile and the review widget.
+# If the count, rating, recommend percent or sub-scores changed, and the
+# change still looks right, commit lib/which.json to main and nothing else.
+# A push to main rebuilds the live site through the existing Vercel Git
+# integration. No deploy hook and no extra token.
+#
+# A failed fetch, a failed parse, or a figure that moves too far leaves the
+# file alone. The site keeps the last good numbers.
+on:
+  schedule:
+    # 07:30 UTC. That is 07:30 in winter and 08:30 in summer, UK time.
+    - cron: "30 7 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Check the live page and do not commit"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: which-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read Which? and update lib/which.json
+        run: node --experimental-strip-types scripts/refresh-which.ts ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      - name: Commit lib/which.json only
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git add -- lib/which.json
+          extra=$(git diff --cached --name-only -- . ':(exclude)lib/which.json')
+          if [ -n "$extra" ]; then
+            echo "Refusing to commit. Staged files other than lib/which.json:"
+            echo "$extra"
+            exit 1
+          fi
+          if git diff --cached --quiet -- lib/which.json; then
+            echo "No change to lib/which.json."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Update Which? figures from the public profile"
+          git push origin HEAD:main

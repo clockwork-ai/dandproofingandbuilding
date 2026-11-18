@@ -4,7 +4,7 @@ Site rules for anyone, human or assistant, working in this repo. Claude Code rea
 
 ## Standing rules
 
-- Work from the latest default branch (`main`). Open a preview pull request for every change, with the template filled in. Callum approves merges. Do not merge without that approval, and never push to main.
+- Work from the latest default branch (`main`). Open a preview pull request for every change, with the template filled in. Callum approves merges. Do not merge without that approval, and never push to main. The only exception is the Which? refresh Action, which may commit `lib/which.json` and nothing else.
 - British English. No em dashes or en dashes in copy, code, or chat replies. Use full stops, commas or colons. Write ranges as "to".
 - Do not change phone numbers. The site shows 01942 802880 (header) and 07587 415299 (emergency and Google). Any change needs Callum's approval, in writing, first. The same goes for any price or quote figure.
 - Never touch the Search Console verification file `google8befe8a7d9c26cd2.html` at the repo root, and never add, move or edit any other verification file or meta tag.
@@ -19,7 +19,7 @@ D & P Roofing and Building. Canvas #0A0F16, surface #141B25, ink #EEF2F6, accent
 ## Where things are
 
 - The chatbot is edited in `lib/business.ts`. Replies name pages in words. The widget adds the button. A reply must not contain a raw URL or a path.
-- The Which? review count and rating live in `lib/which.json`. Change it there, nowhere else. The build fills them into every page and stops if the number is missing, 0 or not a whole number.
+- The Which? review count, rating, recommend percent and sub-scores live in `lib/which.json`. Change them there, nowhere else. A daily GitHub Action reads the public Which? profile and, when the figures change and still look right, commits only that file to main so the site rebuilds. The build fills the figures into every page and stops if a number is missing, 0 or not valid.
 - `/photo-frame/` is Dale's private page (noindex, out of the sitemap). Leave it out of menus.
 - Area pages are the `roofers-*` and `builders-*` folders plus `locations/`; the sitemap is `sitemap.xml`.
 

@@ -3,20 +3,64 @@ import { del, get, list } from "@vercel/blob";
 
 // lib/which.json
 var which_default = {
-  count: 143,
+  count: 144,
   rating: "5.0",
-  checkedOn: "2026-11-03",
+  recommendPercent: 99,
+  scores: {
+    customerService: "5.0",
+    quality: "5.0",
+    value: "5.0"
+  },
+  checkedOn: "2026-11-18",
   profileUrl: "https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/"
 };
 
 // lib/which.ts
+var RATING = /^[0-5]\.\d$/;
+var DATE = /^\d{4}-\d{2}-\d{2}$/;
+function isScore(value) {
+  return typeof value === "string" && RATING.test(value);
+}
 function checkWhich(value) {
   const w = value;
   if (!w || typeof w !== "object") throw new Error("lib/which.json is not an object");
-  if (!Number.isInteger(w.count) || w.count <= 0) throw new Error(`lib/which.json "count" must be a whole number above 0, got ${JSON.stringify(w.count)}`);
-  if (typeof w.rating !== "string" || !/^[0-5]\.\d$/.test(w.rating)) throw new Error(`lib/which.json "rating" must look like "5.0", got ${JSON.stringify(w.rating)}`);
-  if (typeof w.profileUrl !== "string" || !w.profileUrl.startsWith("https://trustedtraders.which.co.uk/")) throw new Error(`lib/which.json "profileUrl" must be the Which? profile link`);
-  return w;
+  if (!Number.isInteger(w.count) || w.count <= 0) {
+    throw new Error(`lib/which.json "count" must be a whole number above 0, got ${JSON.stringify(w.count)}`);
+  }
+  if (!isScore(w.rating)) throw new Error(`lib/which.json "rating" must look like "5.0", got ${JSON.stringify(w.rating)}`);
+  if (!Number.isInteger(w.recommendPercent) || w.recommendPercent < 0 || w.recommendPercent > 100) {
+    throw new Error(`lib/which.json "recommendPercent" must be a whole number from 0 to 100, got ${JSON.stringify(w.recommendPercent)}`);
+  }
+  const scores = w.scores;
+  if (!scores || typeof scores !== "object") throw new Error('lib/which.json "scores" must be an object');
+  if (!isScore(scores.customerService) || !isScore(scores.quality) || !isScore(scores.value)) {
+    throw new Error('lib/which.json scores for customer service, quality and value must each look like "5.0"');
+  }
+  if (typeof w.checkedOn !== "string" || !DATE.test(w.checkedOn)) {
+    throw new Error(`lib/which.json "checkedOn" must be a date like "2026-11-18", got ${JSON.stringify(w.checkedOn)}`);
+  }
+  if (typeof w.profileUrl !== "string" || !w.profileUrl.startsWith("https://trustedtraders.which.co.uk/")) {
+    throw new Error('lib/which.json "profileUrl" must be the Which? profile link');
+  }
+  return {
+    count: w.count,
+    rating: w.rating,
+    recommendPercent: w.recommendPercent,
+    scores: {
+      customerService: scores.customerService,
+      quality: scores.quality,
+      value: scores.value
+    },
+    checkedOn: w.checkedOn,
+    profileUrl: w.profileUrl
+  };
+}
+function whichScoresSentence(w) {
+  const { customerService, quality, value } = w.scores;
+  if (customerService === quality && quality === value) {
+    return `Customer service, quality and value all score ${customerService}`;
+  }
+  return `Customer service scores ${customerService}, quality ${quality} and value ${value}`;
 }
 var which = checkWhich(which_default);
 
@@ -108,7 +152,7 @@ Areas. Based on Park Road, Westhoughton BL5, working across the North West. The 
 - Bramhall, 20 miles, SK7
 Worsley is named on the home page and in the site details. It has no town page and no postcode of its own on the site. Westhoughton is the base, BL5, including the office postcode BL5 3HB. If a place is not in this list, it is not on the areas page. The areas page says: not on the list, ask anyway. Do not promise cover. Tell them to ring or WhatsApp the postcode so Dale can confirm. The areas page is /locations/.
 
-Trust, only as published. Which? Trusted Trader. Rated ${which.rating} from ${which.count} reviews. Customer service, quality and value all score 5.0, and 99% of customers recommend them. Facebook: 887 followers, 100% recommend. Instagram: 731 posts, @dandp_roofing_and_buildingltd. The home page shows four of the ${which.count} Which? reviews, and says to read every one on Which?: Highly Recommended (Jul 2026), Great Service (May 2026), Great work and service (May 2026), Realistically, would be a 10 Star Review (Jun 2026). Two short lines you may repeat exactly, and not extend: "They did not increase the roofing quote." and, from Nick Wilder, "completed to a very high standard and exactly at the price we were quoted." Thirty years on roofs and buildings across Bolton and Greater Manchester. Which? page: https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/
+Trust, only as published. Which? Trusted Trader. Rated ${which.rating} from ${which.count} reviews. ${whichScoresSentence(which)}, and ${which.recommendPercent}% of customers recommend them. Facebook: 887 followers, 100% recommend. Instagram: 731 posts, @dandp_roofing_and_buildingltd. The home page shows four of the ${which.count} Which? reviews, and says to read every one on Which?: Highly Recommended (Jul 2026), Great Service (May 2026), Great work and service (May 2026), Realistically, would be a 10 Star Review (Jun 2026). Two short lines you may repeat exactly, and not extend: "They did not increase the roofing quote." and, from Nick Wilder, "completed to a very high standard and exactly at the price we were quoted." Thirty years on roofs and buildings across Bolton and Greater Manchester. Which? page: https://trustedtraders.which.co.uk/businesses/d-p-roofing-building-ltd/
 
 Work shown. The gallery and the home page show photos of their own jobs across Greater Manchester, with captions such as full re-roof, flat roof, dormer, bay roof, extension, brickwork, gutter, parapet, church roof repairs, a terrace re-roof in September 2026 and a new ridge in September 2026. Do not invent a street, a price or a story about a photo. The gallery is /gallery/. More photos are on Facebook and Instagram.
 
