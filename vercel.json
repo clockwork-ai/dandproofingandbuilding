@@ -4,6 +4,13 @@
   "buildCommand": "node --experimental-strip-types scripts/build.mjs",
   "outputDirectory": "public",
   "regions": ["lhr1"],
+  "redirects": [
+    {
+      "source": "/:path((?!api(?:/|$))(?:[^/]+/)*[^/.]+)",
+      "destination": "/:path/",
+      "permanent": true
+    }
+  ],
   "crons": [
     {
       "path": "/api/cleanup-enquiries",
