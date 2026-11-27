@@ -56,7 +56,7 @@ const existingFaqs = [
 ];
 
 const tidyFaq = {
-  question: "Will you leave my house and garden tidy?",
+  question: "Do you clear up as you go?",
   answer: "Yes. The site is cleared every day.",
 };
 const areaFaq = {
@@ -185,7 +185,7 @@ test("chat knowledge matches the new answers and does not name a path for them",
   assert.match(business.knowledge, /Do not promise a same day visit/);
   assert.equal(business.pages.includes("/emergency"), false);
   assert.equal(business.knowledge.includes("/emergency"), false);
-  const tidy = business.knowledge.match(/If someone asks whether the house and garden[\s\S]*?garden\./);
+  const tidy = business.knowledge.match(/If someone asks whether they clear up as they go[\s\S]*?house or garden\./);
   const area = business.knowledge.match(/If someone asks whether you work[\s\S]*?not on the list\./);
   const leak = business.knowledge.match(/The leaking roof line[\s\S]*?do not add those\./);
   assert.ok(tidy && area && leak);
